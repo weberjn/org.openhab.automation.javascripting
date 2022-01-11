@@ -88,9 +88,9 @@ public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
     private Collection<String> listClassResources(String packageName) {
 
         String path = packageName.replace(".", "/");
-        path = "/" + path + "/";
+        path = "/" + path;
 
-        Collection<String> resources = bundleWiring.listResources(path, "*.class", BundleWiring.LISTRESOURCES_RECURSE);
+        Collection<String> resources = bundleWiring.listResources(path, "*.class", 0);
 
         return resources;
     }
