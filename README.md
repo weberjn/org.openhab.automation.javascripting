@@ -10,14 +10,16 @@ Currently this is pre-Alpha.
 
 What works:
 
-Java in default package and without library dependencies.
+Java in default package.
 
 ```java
 
-import java.util.Map;
-import java.io.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Script {
+
+	private static final Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules");
 	
 	static Map<String, Object> m;
 
@@ -25,18 +27,28 @@ public class Script {
 		this.m = m;
 	}
 
-	public Map<String, Object> getBindings() {
+	public Map<String, Object> getBindings() { 
 		return m;
 	}
 
+	
+	public static int counter = 1;
+ 
+
 	public static void main(String[] args)  {
 		
-		System.out.println("Hello from Java");
-    }
-	
-}
-```
+		logger.info("Hello java world!");
+		logger.info("counter: " + counter++);
+		
+		logger.info("Java main start");
+		
+		logger.info("bindings: " + m);
 
+		System.out.println("Java main end");
+    }
+}
+
+```
 
 # Testing
 
