@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -124,20 +123,18 @@ public class MemoryForwardingJavaFileManager extends ForwardingJavaFileManager<S
 
     static class ClasspathMemoryJavaFileObject extends AbstractMemoryJavaFileObject {
 
-        byte[] byteCode;
         String className;
+        String resource;
+        ClassLoader classLoader;
 
         ClasspathMemoryJavaFileObject(ClassLoader classLoader, String resource) throws IOException {
             super(resource, JavaFileObject.Kind.CLASS);
 
+            this.classLoader = classLoader;
+            this.resource = resource;
+
             className = resource.substring(0, resource.lastIndexOf("."));
             className = className.replace('/', '.');
-
-            URL url = classLoader.getResource(resource);
-
-            try (InputStream is = url.openStream()) {
-                byteCode = is.readAllBytes();
-            }
         }
 
         @Override
@@ -146,13 +143,10 @@ public class MemoryForwardingJavaFileManager extends ForwardingJavaFileManager<S
         }
 
         @Override
-        public CharSequence getCharContent(boolean ignoreEncodingErrors) {
-            return new String(byteCode, StandardCharsets.UTF_8);
-        }
-
-        @Override
-        public InputStream openInputStream() {
-            return new ByteArrayInputStream(byteCode);
+        public InputStream openInputStream() throws IOException {
+            URL url = classLoader.getResource(resource);
+            InputStream is = url.openStream();
+            return is;
         }
 
         @Override

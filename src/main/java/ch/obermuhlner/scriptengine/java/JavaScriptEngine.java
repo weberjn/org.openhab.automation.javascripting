@@ -149,7 +149,9 @@ public class JavaScriptEngine implements ScriptEngine, Compilable {
     public Object eval(String script, Bindings bindings) throws ScriptException {
         CompiledScript compile = compile(script);
 
-        return compile.eval(bindings);
+        Object o = compile.eval(bindings);
+
+        return o;
     }
 
     @Override
