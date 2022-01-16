@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.script.Bindings;
 import javax.script.CompiledScript;
@@ -108,11 +109,16 @@ public class JavaCompiledScript extends CompiledScript {
         Bindings globalBindings = context.getBindings(ScriptContext.GLOBAL_SCOPE);
         Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
 
-        pushVariables(globalBindings, engineBindings);
-        Object result = executionStrategy.execute(compiledInstance);
-        pullVariables(globalBindings, engineBindings);
+//        pushVariables(globalBindings, engineBindings);
+        
+        Map<String, Object> mergedBindings = mergeBindings(globalBindings, engineBindings);
+        Entry<Object, Map<String, Object>> me = executionStrategy.execute(compiledInstance, mergedBindings);
+        
+        Map<String, Object> values = me.getValue();
+        
+        pullVariables(values, globalBindings, engineBindings);
 
-        return result;
+        return me.getKey();
     }
 
     private void pushVariables(Bindings globalBindings, Bindings engineBindings) throws ScriptException {
@@ -144,17 +150,8 @@ public class JavaCompiledScript extends CompiledScript {
         }
     }
 
-    private void pullVariables(Bindings globalBindings, Bindings engineBindings) throws ScriptException {
+    private void pullVariables(Map<String, Object> mergedBindings, Bindings globalBindings, Bindings engineBindings) throws ScriptException {
         if (true) {
-            Object o;
-            try {
-                Method m = compiledClass.getMethod("getBindings");
-
-                o = m.invoke(compiledInstance);
-            } catch (Exception e) {
-                throw new ScriptException(e);
-            }
-            Map<String, Object> mergedBindings = (Map<String, Object>) o;
             for (Map.Entry<String, Object> entry : mergedBindings.entrySet()) {
                 String name = entry.getKey();
                 Object value = entry.getValue();

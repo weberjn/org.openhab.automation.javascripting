@@ -3,8 +3,11 @@ package ch.obermuhlner.scriptengine.java.execution;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 import javax.script.ScriptException;
@@ -34,10 +37,15 @@ public class DefaultExecutionStrategy implements ExecutionStrategy {
     }
 
     @Override
-    public Object execute(Object instance) throws ScriptException {
+	public Entry<Object,Map<String, Object>> execute(Object instance, Map<String, Object> bindings) throws ScriptException
+        
+     {
         if (instance instanceof Supplier) {
             Supplier<?> supplier = (Supplier<?>) instance;
-            return supplier.get();
+            
+            Entry<Object,Map<String, Object>> e = new AbstractMap.SimpleEntry((String)null, supplier.get());
+            
+            return e;
         }
 
         if (instance instanceof Runnable) {
@@ -45,7 +53,9 @@ public class DefaultExecutionStrategy implements ExecutionStrategy {
             runnable.run();
             return null;
         }
-
+/* 
+// TODO 
+ 
         if (method != null) {
             try {
                 return method.invoke(instance);
@@ -53,7 +63,7 @@ public class DefaultExecutionStrategy implements ExecutionStrategy {
                 throw new ScriptException(e);
             }
         }
-
+*/
         if (instance == null) {
             throw new ScriptException("No static method found to execute of type " + clazz.getName());
         }

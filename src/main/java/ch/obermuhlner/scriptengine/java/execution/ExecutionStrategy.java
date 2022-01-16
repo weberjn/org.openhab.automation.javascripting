@@ -1,5 +1,8 @@
 package ch.obermuhlner.scriptengine.java.execution;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.script.ScriptException;
 
 /**
@@ -13,5 +16,6 @@ public interface ExecutionStrategy {
      * @return the return value of the method, or {@code null}
      * @throws ScriptException if no method to execute was found
      */
-    Object execute(Object instance) throws ScriptException;
+	Entry<Object,Map<String, Object>> execute(Object instance, Map<String, Object> bindings) throws ScriptException;
+    
 }

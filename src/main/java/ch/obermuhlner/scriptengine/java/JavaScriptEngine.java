@@ -122,6 +122,7 @@ public class JavaScriptEngine implements ScriptEngine, Compilable {
 
     @Override
     public Object eval(Reader reader) throws ScriptException {
+        // openHAB entry
         return eval(readScript(reader));
     }
 
@@ -168,8 +169,6 @@ public class JavaScriptEngine implements ScriptEngine, Compilable {
 
         MemoryForwardingJavaFileManager fileManager = new MemoryForwardingJavaFileManager(standardFileManager,
                 parentClassLoader, packageLister);
-
-        // MemoryFileManager memoryFileManager = new MemoryFileManager(standardFileManager, parentClassLoader);
 
         String fullClassName = nameStrategy.getFullName(script);
         String simpleClassName = NameStrategy.extractSimpleName(fullClassName);

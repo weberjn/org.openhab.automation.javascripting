@@ -32,5 +32,6 @@ shell.nix
 tags
 
 journal.txt
+bindings.txt
 src/test/
 

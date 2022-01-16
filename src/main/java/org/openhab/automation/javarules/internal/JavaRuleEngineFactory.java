@@ -43,13 +43,16 @@ import ch.obermuhlner.scriptengine.java.JavaScriptEngine;
 @NonNullByDefault
 public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
 
-    @Nullable
-    ScriptEngine scriptEngineProxy;
+//    @Nullable
+//    ScriptEngine scriptEngineProxy;
 
     @Nullable
     BundleWiring bundleWiring;
 
     private static final Logger logger = LoggerFactory.getLogger(JavaRuleEngineFactory.class);
+
+    @Nullable
+	private JavaScriptEngine engine;
 
     @Activate
     protected void activate(BundleContext context, Map<String, ?> config) {
@@ -62,14 +65,14 @@ public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
             }
         };
 
-        JavaScriptEngine engine = new ch.obermuhlner.scriptengine.java.JavaScriptEngine();
+        engine = new ch.obermuhlner.scriptengine.java.JavaScriptEngine();
 
         engine.setExecutionStrategyFactory(new EntryExecutionStrategyFactory());
         engine.setPackageLister(packageLister);
 
         bundleWiring = context.getBundle().adapt(BundleWiring.class);
 
-        scriptEngineProxy = new JavaRulesScriptEngine(engine);
+//        scriptEngineProxy = new JavaRulesScriptEngine(engine);
 
         logger.info("Bundle activated");
     }
@@ -82,9 +85,11 @@ public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
 
     @Override
     public @Nullable ScriptEngine createScriptEngine(String scriptType) {
-        return getScriptTypes().contains(scriptType) ? scriptEngineProxy : null;
+        return getScriptTypes().contains(scriptType) ? engine : null;
     }
 
+    // Compiler wants classes in used packages
+    
     private Collection<String> listClassResources(String packageName) {
 
         String path = packageName.replace(".", "/");

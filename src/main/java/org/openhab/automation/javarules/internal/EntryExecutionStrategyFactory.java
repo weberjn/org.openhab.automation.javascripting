@@ -1,8 +1,12 @@
 package org.openhab.automation.javarules.internal;
 
-import java.lang.reflect.Method;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.script.ScriptException;
+
+import org.openhab.automation.javarules.scriptsupport.ScriptBase;
 
 import ch.obermuhlner.scriptengine.java.execution.ExecutionStrategy;
 import ch.obermuhlner.scriptengine.java.execution.ExecutionStrategyFactory;
@@ -15,21 +19,21 @@ public class EntryExecutionStrategyFactory implements ExecutionStrategyFactory {
         return new ExecutionStrategy() {
 
             @Override
-            public Object execute(Object instance) throws ScriptException {
-                Object o;
+        	public Entry<Object,Map<String, Object>> execute(Object instance, Map<String, Object> bindings) throws ScriptException
+             {
                 try {
-                    Method m = instance.getClass().getMethod("main", String[].class);
+                	
+                	ScriptBase script = (ScriptBase)instance;
+                	
+                	Map<String, Object> sret = script.eval(bindings);
+                	
+                	Entry<Object,Map<String, Object>> e = new AbstractMap.SimpleEntry<>(null, sret);
 
-                    String[] args = {};
-
-                    Object[] argswrapper = new Object[1];
-                    argswrapper[0] = args;
-                    m.invoke(null, argswrapper);
+                	return e;
+                	
                 } catch (Exception e) {
                     throw new ScriptException(e);
                 }
-
-                return null;
             }
         };
     }
