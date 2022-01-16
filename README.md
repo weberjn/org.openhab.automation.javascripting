@@ -1,4 +1,4 @@
-# Java Scripting
+# openHAB 3.3 Java Scripting
 
 This openHAB add-on provides support for Java JSR 223 scripts.
 
@@ -10,7 +10,9 @@ Currently this is Alpha.
 
 What works:
 
-This Script ported from the (Groovy Sample)[https://www.openhab.org/docs/configuration/jsr223.html#groovy]
+This Script ported from the [openHAB Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy)
+
+# Sample Script
 
 ```java
 import java.util.ArrayList;
@@ -37,8 +39,6 @@ public class Script extends ScriptBase {
 	private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.script");
 
 	public int counter = 1;
-
-	//              
 	
 	protected void onLoad() {
 		try {
@@ -49,8 +49,6 @@ public class Script extends ScriptBase {
 			
 			logger.info("MQTT done");
 					
-//			if (true) return; 
-			
 			SimpleRule sr = new SimpleRule() {
 
 				@Override
@@ -86,16 +84,20 @@ public class Script extends ScriptBase {
 			throw e;
 		}
 	}
-
 }
 
 ```
 
-# Testing
+# Bugs
+
+* Scripts only work the second time, initially automationManager is null
+* Unloading does not work.
+
+# Test
 
 put Script.java into conf/automation/jsr223/
 
-The Java class is loaded, compiled into memory and it's main method is executed.
+The Java class is loaded, compiled into memory and its onLoad() method is executed.
 
 # addon project  for scripts
 
