@@ -16,6 +16,5 @@ public interface ExecutionStrategy {
      * @return the return value of the method, or {@code null}
      * @throws ScriptException if no method to execute was found
      */
-	Entry<Object,Map<String, Object>> execute(Object instance, Map<String, Object> bindings) throws ScriptException;
-    
+    Entry<Object, Map<String, Object>> execute(Object instance, Map<String, Object> bindings) throws ScriptException;
 }

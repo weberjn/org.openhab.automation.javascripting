@@ -109,13 +109,13 @@ public class JavaCompiledScript extends CompiledScript {
         Bindings globalBindings = context.getBindings(ScriptContext.GLOBAL_SCOPE);
         Bindings engineBindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
 
-//        pushVariables(globalBindings, engineBindings);
-        
+        // pushVariables(globalBindings, engineBindings);
+
         Map<String, Object> mergedBindings = mergeBindings(globalBindings, engineBindings);
         Entry<Object, Map<String, Object>> me = executionStrategy.execute(compiledInstance, mergedBindings);
-        
+
         Map<String, Object> values = me.getValue();
-        
+
         pullVariables(values, globalBindings, engineBindings);
 
         return me.getKey();
@@ -150,7 +150,8 @@ public class JavaCompiledScript extends CompiledScript {
         }
     }
 
-    private void pullVariables(Map<String, Object> mergedBindings, Bindings globalBindings, Bindings engineBindings) throws ScriptException {
+    private void pullVariables(Map<String, Object> mergedBindings, Bindings globalBindings, Bindings engineBindings)
+            throws ScriptException {
         if (true) {
             for (Map.Entry<String, Object> entry : mergedBindings.entrySet()) {
                 String name = entry.getKey();

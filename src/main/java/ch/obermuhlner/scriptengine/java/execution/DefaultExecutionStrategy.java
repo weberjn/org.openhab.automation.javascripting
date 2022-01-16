@@ -1,6 +1,5 @@
 package ch.obermuhlner.scriptengine.java.execution;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.AbstractMap;
@@ -37,14 +36,15 @@ public class DefaultExecutionStrategy implements ExecutionStrategy {
     }
 
     @Override
-	public Entry<Object,Map<String, Object>> execute(Object instance, Map<String, Object> bindings) throws ScriptException
-        
-     {
+    public Entry<Object, Map<String, Object>> execute(Object instance, Map<String, Object> bindings)
+            throws ScriptException
+
+    {
         if (instance instanceof Supplier) {
             Supplier<?> supplier = (Supplier<?>) instance;
-            
-            Entry<Object,Map<String, Object>> e = new AbstractMap.SimpleEntry((String)null, supplier.get());
-            
+
+            Entry<Object, Map<String, Object>> e = new AbstractMap.SimpleEntry((String) null, supplier.get());
+
             return e;
         }
 
@@ -53,17 +53,17 @@ public class DefaultExecutionStrategy implements ExecutionStrategy {
             runnable.run();
             return null;
         }
-/* 
-// TODO 
- 
-        if (method != null) {
-            try {
-                return method.invoke(instance);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new ScriptException(e);
-            }
-        }
-*/
+        /*
+         * // TODO
+         * 
+         * if (method != null) {
+         * try {
+         * return method.invoke(instance);
+         * } catch (IllegalAccessException | InvocationTargetException e) {
+         * throw new ScriptException(e);
+         * }
+         * }
+         */
         if (instance == null) {
             throw new ScriptException("No static method found to execute of type " + clazz.getName());
         }
