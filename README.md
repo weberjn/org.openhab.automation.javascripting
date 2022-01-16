@@ -6,46 +6,87 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 which is included here in a hacked copy.
 
 
-Currently this is pre-Alpha.
+Currently this is Alpha.
 
 What works:
 
-Java in default package.
+This Script ported from the (Groovy Sample)[https://www.openhab.org/docs/configuration/jsr223.html#groovy]
 
 ```java
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.core.automation.util.TriggerBuilder;
+import org.openhab.core.automation.Action;
+import org.openhab.core.automation.Trigger;
+import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
+import org.openhab.core.config.core.Configuration;
+import org.openhab.core.thing.binding.ThingActions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Script {
 
-	private static final Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules");
+/*
+ * @author weberjn
+ */
+public class Script extends ScriptBase {
+
+	private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.script");
+
+	public int counter = 1;
+
+	//              
 	
-	static Map<String, Object> m;
+	protected void onLoad() {
+		try {
+			Map ruleSupport = self.importPreset("RuleSupport");
 
-	public void setBindings(Map<String, Object> m) {
-		this.m = m;
+			ThingActions thingActions = actions.get("mqtt","mqtt:broker:nico");
+			actions.invoke(thingActions, "publishMQTT", "a/topic","hello");
+			
+			logger.info("MQTT done");
+					
+//			if (true) return; 
+			
+			SimpleRule sr = new SimpleRule() {
+
+				@Override
+				public Object execute(Action module, Map<String, ?> inputs) {
+
+					logger.info("Java execute {},  inputs: {} ", counter++, inputs);
+
+					return null;
+				}
+			};
+			
+			sr.setName("Java-One");
+
+			List<Trigger> triggers = new ArrayList<Trigger>(1);
+
+			Map<String, Object> triggerConf = new HashMap<String, Object>();
+			triggerConf.put("cronExpression", "0 * * * * ?");
+
+			Trigger trigger = TriggerBuilder.create().withId("aTimerTrigger").withTypeUID("timer.GenericCronTrigger")
+					.withConfiguration(new Configuration(triggerConf)).build();
+
+			triggers.add(trigger);
+
+			sr.setTriggers(triggers);
+
+			automationManager.addRule(sr);
+
+			logger.info("onLoad() done");
+		} catch (Throwable e) {
+			e.printStackTrace(System.err);
+			logger.trace(e.getMessage(), e);
+
+			throw e;
+		}
 	}
 
-	public Map<String, Object> getBindings() { 
-		return m;
-	}
-
-	
-	public static int counter = 1;
- 
-
-	public static void main(String[] args)  {
-		
-		logger.info("Hello java world!");
-		logger.info("counter: " + counter++);
-		
-		logger.info("Java main start");
-		
-		logger.info("bindings: " + m);
-
-		System.out.println("Java main end");
-    }
 }
 
 ```
