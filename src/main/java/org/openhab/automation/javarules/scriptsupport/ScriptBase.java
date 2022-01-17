@@ -12,7 +12,7 @@ public abstract class ScriptBase {
 
     private static Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules");
 
-    private Map<String, Object> bindings;
+    protected Map<String, Object> bindings;
 
     protected ScriptedAutomationManager automationManager;
 
@@ -20,9 +20,11 @@ public abstract class ScriptBase {
 
     protected ScriptExtensionManagerWrapperProxy self;
 
+    protected Map<String, Object> ruleSupport;
+
     // ScriptExtensionManagerWrapper is in the bundle private
     // org.openhab.core.automation.module.script.internal.ScriptExtensionManagerWrapper
-    // that we can only access by reflection (Java is not Groovy)
+    // which we can only access by reflection (Java is not Groovy)
 
     protected static class ScriptExtensionManagerWrapperProxy {
 
@@ -93,7 +95,7 @@ public abstract class ScriptBase {
     }
 
     /*
-     * framework calls this on script load
+     * called by JavaRuleEngine on script load
      */
 
     public Map<String, Object> eval(Map<String, Object> bindings) {
@@ -103,14 +105,18 @@ public abstract class ScriptBase {
 
         self = new ScriptExtensionManagerWrapperProxy(se);
 
+        ruleSupport = self.importPreset("RuleSupport");
+
         Object actions = bindings.get("actions");
 
         this.actions = new ScriptThingActionsProxy(actions);
 
-        automationManager = (ScriptedAutomationManager) bindings.get("automationManager");
+        automationManager = (ScriptedAutomationManager) ruleSupport.get("automationManager");
 
         try {
+
             onLoad();
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw e;

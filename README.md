@@ -42,11 +42,10 @@ public class Script extends ScriptBase {
 	
 	protected void onLoad() {
 		try {
-			Map ruleSupport = self.importPreset("RuleSupport");
 
 			ThingActions thingActions = actions.get("mqtt","mqtt:broker:nico");
-			actions.invoke(thingActions, "publishMQTT", "a/topic","hello");
-			
+			actions.invoke(thingActions, "publishMQTT", "about/java","Java script onload()");
+
 			logger.info("MQTT done");
 					
 			SimpleRule sr = new SimpleRule() {
@@ -87,11 +86,6 @@ public class Script extends ScriptBase {
 }
 
 ```
-
-# Bugs
-
-* Scripts only work the second time, initially automationManager is null
-* Unloading does not work.
 
 # Test
 

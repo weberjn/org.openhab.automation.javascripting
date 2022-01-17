@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.obermuhlner.scriptengine.java.JavaScriptEngine;
+import ch.obermuhlner.scriptengine.java.JavaScriptEngineFactory;
 
 /**
  * This is an implementation of a {@link ScriptEngineFactory} for Java, based on
@@ -43,21 +44,21 @@ import ch.obermuhlner.scriptengine.java.JavaScriptEngine;
 @NonNullByDefault
 public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
 
-    // @Nullable
-    // ScriptEngine scriptEngineProxy;
+    private static final Logger logger = LoggerFactory.getLogger(JavaRuleEngineFactory.class);
 
     @Nullable
     BundleWiring bundleWiring;
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaRuleEngineFactory.class);
+    @Nullable
+    private JavaScriptEngineFactory javaScriptEngineFactory;
 
     @Nullable
-    private JavaScriptEngine engine;
+    private PackageResourceLister packageLister;
 
     @Activate
     protected void activate(BundleContext context, Map<String, ?> config) {
 
-        PackageResourceLister packageLister = new PackageResourceLister() {
+        packageLister = new PackageResourceLister() {
 
             @Override
             public Collection<String> listResources(String packageName) {
@@ -65,14 +66,9 @@ public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
             }
         };
 
-        engine = new ch.obermuhlner.scriptengine.java.JavaScriptEngine();
-
-        engine.setExecutionStrategyFactory(new EntryExecutionStrategyFactory());
-        engine.setPackageLister(packageLister);
+        javaScriptEngineFactory = new JavaScriptEngineFactory();
 
         bundleWiring = context.getBundle().adapt(BundleWiring.class);
-
-        // scriptEngineProxy = new JavaRulesScriptEngine(engine);
 
         logger.info("Bundle activated");
     }
@@ -85,7 +81,16 @@ public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
 
     @Override
     public @Nullable ScriptEngine createScriptEngine(String scriptType) {
-        return getScriptTypes().contains(scriptType) ? engine : null;
+        if (getScriptTypes().contains(scriptType)) {
+
+            JavaScriptEngine engine = (JavaScriptEngine) javaScriptEngineFactory.getScriptEngine();
+
+            engine.setExecutionStrategyFactory(new EntryExecutionStrategyFactory());
+            engine.setPackageLister(packageLister);
+
+            return engine;
+        }
+        return null;
     }
 
     // Compiler wants classes in used packages
