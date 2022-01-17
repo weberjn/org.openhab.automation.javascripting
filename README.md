@@ -1,4 +1,4 @@
-# openHAB 3.3 Java Scripting
+# openHAB 3.2 Java Scripting
 
 This openHAB add-on provides support for Java JSR 223 scripts.
 
