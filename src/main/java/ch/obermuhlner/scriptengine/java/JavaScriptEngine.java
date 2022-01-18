@@ -20,7 +20,7 @@ import ch.obermuhlner.scriptengine.java.name.DefaultNameStrategy;
 import ch.obermuhlner.scriptengine.java.name.NameStrategy;
 
 /**
- * Script engine to compile and run a Java class on the fly.
+ * GroovyPort engine to compile and run a Java class on the fly.
  */
 public class JavaScriptEngine implements ScriptEngine, Compilable {
 

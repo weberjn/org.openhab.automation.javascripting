@@ -1,5 +1,4 @@
 
-
 import java.util.Map;
 
 import org.openhab.automation.javarules.scriptsupport.ScriptBase;
@@ -11,28 +10,26 @@ import org.slf4j.LoggerFactory;
 
 public class ItemChangedRule extends ScriptBase {
 
-	private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.cronrule");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.itemrule");
 
-	public int counter = 1;
+    public int counter = 1;
 
-	@Override
-	protected void onLoad() {
+    @Override
+    protected void onLoad() {
 
-		SimpleRule sr = new SimpleRule() {
+        SimpleRule sr = new SimpleRule() {
 
-			@Override
-			public Object execute(Action module, Map<String, ?> inputs) {
+            @Override
+            public Object execute(Action module, Map<String, ?> inputs) {
 
-				logger.info("Java cronrule execute {}", counter++);
+                logger.info("Java cronrule execute {}", counter++);
 
-				return null;
-			}
-		};
+                return null;
+            }
+        };
 
-		Trigger trigger = createItemStateChangeTrigger("BatteryLevelChangedTrigger", "BatteryLevel");
+        Trigger trigger = createItemStateChangeTrigger("BatteryLevelChangedTrigger", "BatteryLevel");
 
-		ruleBuilder(sr).withName("BatteryLevelChanged").withTrigger(trigger).activate();
-
-	};
-
+        ruleBuilder(sr).withName("BatteryLevelChanged").withTrigger(trigger).activate();
+    };
 }

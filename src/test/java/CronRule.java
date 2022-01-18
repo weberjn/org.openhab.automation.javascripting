@@ -1,5 +1,4 @@
 
-
 import java.util.Map;
 
 import org.openhab.automation.javarules.scriptsupport.ScriptBase;
@@ -11,28 +10,26 @@ import org.slf4j.LoggerFactory;
 
 public class CronRule extends ScriptBase {
 
-	private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.cronrule");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.cronrule");
 
-	public int counter = 1;
+    public int counter = 1;
 
-	@Override
-	protected void onLoad() {
-		
-		SimpleRule sr = new SimpleRule() {
+    @Override
+    protected void onLoad() {
 
-			@Override
-			public Object execute(Action module, Map<String, ?> inputs) {
+        SimpleRule sr = new SimpleRule() {
 
-				logger.info("Java cronrule execute {}", counter++);
+            @Override
+            public Object execute(Action module, Map<String, ?> inputs) {
 
-				return null;
-			}
-		};
+                logger.info("Java cronrule execute {}", counter++);
 
-		Trigger trigger = createGenericCronTrigger("CronRuleTrigger", "0 * * * * ?");
-		
-		ruleBuilder(sr).withName("CronRule").withTrigger(trigger).activate();
+                return null;
+            }
+        };
 
-	};
+        Trigger trigger = createGenericCronTrigger("CronRuleTrigger", "0 * * * * ?");
 
+        ruleBuilder(sr).withName("CronRule").withTrigger(trigger).activate();
+    };
 }
