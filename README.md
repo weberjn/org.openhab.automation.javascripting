@@ -6,26 +6,30 @@ This openHAB add-on provides support for Java JSR 223 scripts.
 It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine)
 which is included here in a hacked copy.
 
-
 Currently this is Beta code.
 
+# Programming hints
 
 All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
+
+Java Rules do not see other rule classes. Each one has its own ClassLoader. You cannot use any library jars, except if you build OSGI bundles.
 
 # Test
 
 Put one of the sample Java classes below into conf/automation/jsr223/
 
-The Java class is loaded, compiled into memory and its onLoad() method is executed.
+The Java class is loaded, compiled into memory and its onLoad() method executed.
 
-# addon project  for scripts
+# Project  for scripts
 
-* Create a folder in the openhab addons bundle tree
-* copy the pom.xml of another binding, 
-* remove everything but the parent
-* change groupId and artifactId.
-* Import this as maven project into Eclipse.
-* link conf/automation/jsr223 as external source folder.
+To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies.
+
+* create a folder in the openhab addons bundle tree
+* copy the pom.xml of a binding 
+* remove everything in the pom but the parent
+* change groupId and artifactId
+* import the folder as maven project into Eclipse
+* link conf/automation/jsr223 as external source folder
 
 # Sample Scripts
 
@@ -40,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 public class EventBusExamples extends ScriptBase {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.command");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.eventbus");
 
     @Override
     protected void onLoad() {
@@ -50,7 +54,10 @@ public class EventBusExamples extends ScriptBase {
         Item item = itemRegistry.get("Morning_Temperature");
         events.postUpdate(item, 37.2f);
 
-        logger.info("command sent");
+        Number state = (Number) item.getState();
+        logger.info("new State: {}", state.floatValue());
+
+        logger.info("eventbus done");
     }
 }
 ```
@@ -167,6 +174,7 @@ public class SendMail extends ScriptBase {
 
 import org.openhab.automation.javarules.scriptsupport.ScriptBase;
 import org.openhab.core.model.script.actions.Exec;
+import org.openhab.core.model.script.actions.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,15 +185,64 @@ public class StaticActions extends ScriptBase {
     @Override
     protected void onLoad() {
 
+        String res = HTTP.sendHttpGetRequest("http://localhost/");
+
         String cmd = "termux-media-player play camera-shutter.mp3";
         Exec.executeCommandLine("ssh", "nexus9", cmd);
 
-        logger.info("exec done");
+        logger.info("static actions done");
     }
 }
 ```
- 
- 
+
+## Transformations
+
+```java
+
+import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.core.transform.actions.Transformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Transformations extends ScriptBase {
+
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.transform");
+
+    @Override
+    protected void onLoad() {
+
+        String s = Transformation.transform("REGEX", ".*(hello).*", "hello, world");
+
+        logger.info("transform done, got: " + s);
+    }
+}
+```
+## Persistence
+
+```java
+
+import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.core.items.Item;
+import org.openhab.core.persistence.extensions.PersistenceExtensions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class PersistItems extends ScriptBase {
+
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.persist");
+
+    @Override
+    protected void onLoad() {
+
+        Item item = itemRegistry.get("Morning_Temperature");
+
+        PersistenceExtensions.persist(item);
+
+        logger.info("persist done");
+    }
+}
+```
+  
 ## Groovy port
 
 This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy)
@@ -247,3 +304,4 @@ public class GroovyPort extends ScriptBase {
     }
 }
 ```
+

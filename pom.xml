@@ -15,9 +15,7 @@
   <name>openHAB Add-ons :: Bundles :: Automation :: Java Rules</name>
 
   <build>
-
     <plugins>
-
       <plugin>
         <groupId>com.github.vdubus</groupId>
         <artifactId>velocity-maven-plugin</artifactId>
@@ -43,6 +41,5 @@
       </plugin>
     </plugins>
   </build>
-
 
 </project>

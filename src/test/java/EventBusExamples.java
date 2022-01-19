@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 public class EventBusExamples extends ScriptBase {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.command");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.eventbus");
 
     @Override
     protected void onLoad() {
@@ -16,6 +16,9 @@ public class EventBusExamples extends ScriptBase {
         Item item = itemRegistry.get("Morning_Temperature");
         events.postUpdate(item, 37.2f);
 
-        logger.info("command sent");
+        Number state = (Number) item.getState();
+        logger.info("new State: {}", state.floatValue());
+
+        logger.info("eventbus done");
     }
 }

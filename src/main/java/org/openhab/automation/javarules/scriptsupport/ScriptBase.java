@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openhab.core.audio.AudioManager;
 import org.openhab.core.automation.Trigger;
 import org.openhab.core.automation.module.script.rulesupport.shared.ScriptedAutomationManager;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
@@ -45,6 +46,8 @@ public abstract class ScriptBase {
     protected ThingRegistry thingRegistry;
 
     protected VoiceManager voice;
+
+    protected AudioManager audio;
 
     // ScriptExtensionManagerWrapper is in the bundle private
     // org.openhab.core.automation.module.script.internal.ScriptExtensionManagerWrapper
@@ -217,6 +220,8 @@ public abstract class ScriptBase {
         thingRegistry = (ThingRegistry) bindings.get("things");
 
         voice = (VoiceManager) bindings.get("voice");
+
+        audio = (AudioManager) bindings.get("audio");
 
         try {
 
