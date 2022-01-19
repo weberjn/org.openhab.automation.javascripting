@@ -7,6 +7,7 @@ org.openhab.core.types,\
 org.openhab.core.common.registry,\
 org.openhab.core.config.core,\
 org.openhab.core.model.script,\
+org.openhab.core.model.script.actions,\
 org.openhab.core.model.rule,\
 org.openhab.core.automation,\
 org.openhab.core.automation.util,\

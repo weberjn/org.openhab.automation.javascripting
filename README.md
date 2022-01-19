@@ -14,7 +14,7 @@ All Java classes used as JSR 223 script have to inherit from [org.openhab.automa
 
 # Test
 
-put Script.java into conf/automation/jsr223/
+Put one of the sample Java classes below into conf/automation/jsr223/
 
 The Java class is loaded, compiled into memory and its onLoad() method is executed.
 
@@ -131,11 +131,13 @@ public class ItemChangedRule extends ScriptBase {
         Trigger trigger = createItemStateChangeTrigger("BatteryLevelChangedTrigger", "BatteryLevel");
 
         ruleBuilder(sr).withName("BatteryLevelChanged").withTrigger(trigger).activate();
+
+        logger.info("BatteryLevelChanged rule activated");
     };
 }
 ```
 
-## an action
+## addon actions
 
 ```java
 
@@ -158,6 +160,31 @@ public class SendMail extends ScriptBase {
     }
 }
 ```
+
+## static actions
+
+```java
+
+import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.core.model.script.actions.Exec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class StaticActions extends ScriptBase {
+
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.actions");
+
+    @Override
+    protected void onLoad() {
+
+        String cmd = "termux-media-player play camera-shutter.mp3";
+        Exec.executeCommandLine("ssh", "nexus9", cmd);
+
+        logger.info("exec done");
+    }
+}
+```
+ 
  
 ## Groovy port
 
@@ -188,41 +215,35 @@ public class GroovyPort extends ScriptBase {
     public int counter = 1;
 
     protected void onLoad() {
-        try {
 
-            SimpleRule sr = new SimpleRule() {
+        SimpleRule sr = new SimpleRule() {
 
-                @Override
-                public Object execute(Action module, Map<String, ?> inputs) {
+            @Override
+            public Object execute(Action module, Map<String, ?> inputs) {
 
-                    logger.info("Java execute {},  inputs: {} ", counter++, inputs);
+                logger.info("Java execute {},  inputs: {} ", counter++, inputs);
 
-                    return null;
-                }
-            };
+                return null;
+            }
+        };
 
-            sr.setName("Java-One");
+        sr.setName("Java-One");
 
-            List<Trigger> triggers = new ArrayList<Trigger>(1);
+        List<Trigger> triggers = new ArrayList<Trigger>(1);
 
-            Map<String, Object> triggerConf = new HashMap<String, Object>();
-            triggerConf.put("cronExpression", "0 * * * * ?");
+        Map<String, Object> triggerConf = new HashMap<String, Object>();
+        triggerConf.put("cronExpression", "0 * * * * ?");
 
-            Trigger trigger = TriggerBuilder.create().withId("aTimerTrigger").withTypeUID("timer.GenericCronTrigger")
-                    .withConfiguration(new Configuration(triggerConf)).build();
+        Trigger trigger = TriggerBuilder.create().withId("aTimerTrigger").withTypeUID("timer.GenericCronTrigger")
+                .withConfiguration(new Configuration(triggerConf)).build();
 
-            triggers.add(trigger);
+        triggers.add(trigger);
 
-            sr.setTriggers(triggers);
+        sr.setTriggers(triggers);
 
-            automationManager.addRule(sr);
+        automationManager.addRule(sr);
 
-            logger.info("onLoad() done");
-        } catch (Throwable e) {
-            logger.trace(e.getMessage(), e);
-
-            throw e;
-        }
+        logger.info("onLoad() done");
     }
 }
 ```

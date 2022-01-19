@@ -31,5 +31,7 @@ public class ItemChangedRule extends ScriptBase {
         Trigger trigger = createItemStateChangeTrigger("BatteryLevelChangedTrigger", "BatteryLevel");
 
         ruleBuilder(sr).withName("BatteryLevelChanged").withTrigger(trigger).activate();
+
+        logger.info("BatteryLevelChanged rule activated");
     };
 }

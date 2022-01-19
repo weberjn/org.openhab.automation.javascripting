@@ -22,40 +22,34 @@ public class GroovyPort extends ScriptBase {
     public int counter = 1;
 
     protected void onLoad() {
-        try {
 
-            SimpleRule sr = new SimpleRule() {
+        SimpleRule sr = new SimpleRule() {
 
-                @Override
-                public Object execute(Action module, Map<String, ?> inputs) {
+            @Override
+            public Object execute(Action module, Map<String, ?> inputs) {
 
-                    logger.info("Java execute {},  inputs: {} ", counter++, inputs);
+                logger.info("Java execute {},  inputs: {} ", counter++, inputs);
 
-                    return null;
-                }
-            };
+                return null;
+            }
+        };
 
-            sr.setName("Java-One");
+        sr.setName("Java-One");
 
-            List<Trigger> triggers = new ArrayList<Trigger>(1);
+        List<Trigger> triggers = new ArrayList<Trigger>(1);
 
-            Map<String, Object> triggerConf = new HashMap<String, Object>();
-            triggerConf.put("cronExpression", "0 * * * * ?");
+        Map<String, Object> triggerConf = new HashMap<String, Object>();
+        triggerConf.put("cronExpression", "0 * * * * ?");
 
-            Trigger trigger = TriggerBuilder.create().withId("aTimerTrigger").withTypeUID("timer.GenericCronTrigger")
-                    .withConfiguration(new Configuration(triggerConf)).build();
+        Trigger trigger = TriggerBuilder.create().withId("aTimerTrigger").withTypeUID("timer.GenericCronTrigger")
+                .withConfiguration(new Configuration(triggerConf)).build();
 
-            triggers.add(trigger);
+        triggers.add(trigger);
 
-            sr.setTriggers(triggers);
+        sr.setTriggers(triggers);
 
-            automationManager.addRule(sr);
+        automationManager.addRule(sr);
 
-            logger.info("onLoad() done");
-        } catch (Throwable e) {
-            logger.trace(e.getMessage(), e);
-
-            throw e;
-        }
+        logger.info("onLoad() done");
     }
 }

@@ -15,7 +15,7 @@ All Java classes used as JSR 223 script have to inherit from [org.openhab.automa
 
 # Test
 
-put Script.java into conf/automation/jsr223/
+Put one of the sample Java classes below into conf/automation/jsr223/
 
 The Java class is loaded, compiled into memory and its onLoad() method is executed.
 
@@ -48,11 +48,18 @@ ${H2} ItemChanged rule
 #include("src/test/java/ItemChangedRule.java")
 ```
 
-${H2} an action
+${H2} addon actions
 
 ```java
 #include("src/test/java/SendMail.java")
 ```
+
+${H2} static actions
+
+```java
+#include("src/test/java/StaticActions.java")
+```
+ 
  
 ${H2} Groovy port
 
