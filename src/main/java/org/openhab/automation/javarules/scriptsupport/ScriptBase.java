@@ -11,7 +11,13 @@ import org.openhab.core.automation.module.script.rulesupport.shared.ScriptedAuto
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
 import org.openhab.core.automation.util.TriggerBuilder;
 import org.openhab.core.config.core.Configuration;
+import org.openhab.core.items.Item;
+import org.openhab.core.items.ItemRegistry;
+import org.openhab.core.thing.ThingRegistry;
 import org.openhab.core.thing.binding.ThingActions;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.State;
+import org.openhab.core.voice.VoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,9 +31,20 @@ public abstract class ScriptBase {
 
     protected ScriptThingActionsProxy actions;
 
+    protected ScriptBusEventProxy events;
+
     protected ScriptExtensionManagerWrapperProxy self;
 
     protected Map<String, Object> ruleSupport;
+
+    protected String ON = "ON";
+    protected String OFF = "OFF";
+
+    protected ItemRegistry itemRegistry;
+
+    protected ThingRegistry thingRegistry;
+
+    protected VoiceManager voice;
 
     // ScriptExtensionManagerWrapper is in the bundle private
     // org.openhab.core.automation.module.script.internal.ScriptExtensionManagerWrapper
@@ -56,6 +73,77 @@ public abstract class ScriptBase {
             }
 
             return presets;
+        }
+    }
+
+    protected static class ScriptBusEventProxy {
+
+        Object scriptBusEvent;
+
+        ScriptBusEventProxy(Object scriptBusEvent) {
+            this.scriptBusEvent = scriptBusEvent;
+        }
+
+        public Object sendCommand(String itemName, String commandString) {
+            return invoke("sendCommand", itemName, commandString);
+        }
+
+        public Object sendCommand(Item item, Number number) {
+            return invoke("sendCommand", item, number);
+        }
+
+        public Object sendCommand(Item item, String commandString) {
+            return invoke("sendCommand", item, commandString);
+        }
+
+        public Object sendCommand(Item item, Command command) {
+            return invoke("sendCommand", item, command);
+        }
+
+        public Object postUpdate(Item item, Number state) {
+            Object o;
+            try {
+                Method m = scriptBusEvent.getClass().getMethod("postUpdate", Item.class, Number.class);
+                o = m.invoke(scriptBusEvent, item, state);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return o;
+        }
+
+        public Object postUpdate(Item item, String stateAsString) {
+            return invoke("postUpdate", item, stateAsString);
+        }
+
+        public Object postUpdate(String itemName, String stateString) {
+            return invoke("postUpdate", itemName, stateString);
+        }
+
+        public Object postUpdate(Item item, State state) {
+            return invoke("postUpdate", item, state);
+        }
+
+        public Map<Item, State> storeStates(Item... items) {
+            Object o = invoke("storeStates", items);
+            return (Map<Item, State>) o;
+        }
+
+        private Object invoke(String method, Object... params) {
+            Object o;
+
+            Class<?>[] paramClasses = new Class<?>[params.length];
+
+            for (int i = 0; i < params.length; i++) {
+                paramClasses[i] = params[i].getClass();
+            }
+            try {
+
+                Method m = scriptBusEvent.getClass().getMethod(method, paramClasses);
+                o = m.invoke(scriptBusEvent, params);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            return o;
         }
     }
 
@@ -118,7 +206,17 @@ public abstract class ScriptBase {
 
         this.actions = new ScriptThingActionsProxy(actions);
 
+        Object events = bindings.get("events");
+
+        this.events = new ScriptBusEventProxy(events);
+
         automationManager = (ScriptedAutomationManager) ruleSupport.get("automationManager");
+
+        itemRegistry = (ItemRegistry) bindings.get("itemRegistry");
+
+        thingRegistry = (ThingRegistry) bindings.get("things");
+
+        voice = (VoiceManager) bindings.get("voice");
 
         try {
 

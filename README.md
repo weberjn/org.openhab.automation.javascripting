@@ -7,11 +7,8 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 which is included here in a hacked copy.
 
 
-Currently this is Alpha code.
+Currently this is Beta code.
 
-What works:
-
-The sample Java classes below.
 
 All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
 
@@ -32,7 +29,31 @@ The Java class is loaded, compiled into memory and its onLoad() method is execut
 
 # Sample Scripts
 
+## Changing Items
 
+```java
+
+import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.core.items.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class EventBusExamples extends ScriptBase {
+
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.command");
+
+    @Override
+    protected void onLoad() {
+
+        events.sendCommand("Livingroom_Light", "OFF");
+
+        Item item = itemRegistry.get("Morning_Temperature");
+        events.postUpdate(item, 37.2f);
+
+        logger.info("command sent");
+    }
+}
+```
 
 ## Cron rule
 

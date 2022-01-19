@@ -8,11 +8,8 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 which is included here in a hacked copy.
 
 
-Currently this is Alpha code.
+Currently this is Beta code.
 
-What works:
-
-The sample Java classes below.
 
 All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
 
@@ -33,7 +30,11 @@ The Java class is loaded, compiled into memory and its onLoad() method is execut
 
 # Sample Scripts
 
+${H2} Changing Items
 
+```java
+#include("src/test/java/EventBusExamples.java")
+```
 
 ${H2} Cron rule
 

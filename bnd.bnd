@@ -3,6 +3,7 @@ DynamicImport-Package: *
 Import-Package: \
 org.openhab.core.thing.binding,\
 org.openhab.core.items,\
+org.openhab.core.types,\
 org.openhab.core.common.registry,\
 org.openhab.core.config.core,\
 org.openhab.core.model.script,\
