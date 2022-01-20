@@ -4,6 +4,8 @@ Import-Package: \
 org.openhab.core.thing.binding,\
 org.openhab.core.items,\
 org.openhab.core.types,\
+org.openhab.core.library.types,\
+org.openhab.core.library.items,\
 org.openhab.core.common.registry,\
 org.openhab.core.config.core,\
 org.openhab.core.model.script,\
@@ -18,3 +20,4 @@ org.openhab.core.automation,\
 org.openhab.core.automation.util,\
 org.openhab.core.automation.module.script.rulesupport.shared,\
 org.openhab.core.automation.module.script.rulesupport.shared.simple
+

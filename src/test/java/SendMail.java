@@ -12,7 +12,7 @@ public class SendMail extends ScriptBase {
     protected void onLoad() {
 
         ThingActions thingActions = actions.get("mail", "mail:smtp:mailSender");
-        actions.invoke(thingActions, "mail_at_receiver", "a subject", "mailconten Java script onload()");
+        actions.invoke(thingActions, "mail_at_receiver", "a subject", "mailcontent Java script onload()");
 
         logger.info("mail sent");
     }

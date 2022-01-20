@@ -2,14 +2,14 @@
 
 # openHAB 3.2 Java Scripting
 
-This openHAB add-on provides support for Java JSR 223 scripts.
+This openHAB add-on provides support for JSR 223 scripts written in Java.
 
 It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine)
 which is included here in a hacked copy.
 
 Currently this is Beta code.
 
-# Programming hints
+# Programming Hints
 
 All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
 
@@ -27,7 +27,7 @@ Take from the sample Java classes below and put them into conf/automation/jsr223
 
 The Java class is loaded, compiled into memory and its onLoad() method executed.
 
-# Project  for scripts
+# Project  for Scripts
 
 To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies and a dependency to javarules, of course.
 
@@ -40,31 +40,33 @@ To have a script compile without errors in Eclipse, it should be in a Java proje
 
 # Sample Scripts
 
+The samples are all in [src/test/java](src/test/java).
+
 ${H2} Changing Items
 
 ```java
 #include("src/test/java/EventBusExamples.java")
 ```
 
-${H2} Cron rule
+${H2} Cron Rule
 
 ```java
 #include("src/test/java/CronRule.java")
 ```
 
-${H2} ItemChanged rule
+${H2} ItemChanged Rule
 
 ```java
 #include("src/test/java/ItemChangedRule.java")
 ```
 
-${H2} addon actions
+${H2} Addon Actions
 
 ```java
 #include("src/test/java/SendMail.java")
 ```
 
-${H2} static actions
+${H2} Static Actions
 
 ```java
 #include("src/test/java/StaticActions.java")
@@ -81,9 +83,10 @@ ${H2} Persistence
 #include("src/test/java/PersistItems.java")
 ```
   
-${H2} Groovy port
+${H2} Groovy Port
 
 This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy)
+It does not use syntactic sugar of ScriptBase, only pure openHAB JSR 223.
 
 ```java
 #include("src/test/java/GroovyPort.java")

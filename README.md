@@ -1,14 +1,14 @@
 
 # openHAB 3.2 Java Scripting
 
-This openHAB add-on provides support for Java JSR 223 scripts.
+This openHAB add-on provides support for JSR 223 scripts written in Java.
 
 It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine)
 which is included here in a hacked copy.
 
 Currently this is Beta code.
 
-# Programming hints
+# Programming Hints
 
 All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
 
@@ -26,7 +26,7 @@ Take from the sample Java classes below and put them into conf/automation/jsr223
 
 The Java class is loaded, compiled into memory and its onLoad() method executed.
 
-# Project  for scripts
+# Project  for Scripts
 
 To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies and a dependency to javarules, of course.
 
@@ -39,12 +39,19 @@ To have a script compile without errors in Eclipse, it should be in a Java proje
 
 # Sample Scripts
 
+The samples are all in [src/test/java](src/test/java).
+
 ## Changing Items
 
 ```java
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
+
 import org.openhab.automation.javarules.scriptsupport.ScriptBase;
 import org.openhab.core.items.Item;
+import org.openhab.core.library.items.NumberItem;
+import org.openhab.core.library.types.DecimalType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,23 +59,34 @@ public class EventBusExamples extends ScriptBase {
 
     private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.eventbus");
 
+    
+    
     @Override
     protected void onLoad() {
 
         events.sendCommand("Livingroom_Light", "OFF");
 
         Item item = itemRegistry.get("Morning_Temperature");
+        
+        ((NumberItem)item).setState(new DecimalType(0.0f));
+        
         events.postUpdate(item, 37.2f);
 
         Number state = (Number) item.getState();
         logger.info("new State: {}", state.floatValue());
 
-        logger.info("eventbus done");
+        LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(100));
+
+        state = (Number) item.getState();
+        logger.info("new State again: {}", state.floatValue());
+
+        
+        logger.info("eventbus done");  
     }
 }
 ```
 
-## Cron rule
+## Cron Rule
 
 ```java
 
@@ -104,11 +122,13 @@ public class CronRule extends ScriptBase {
         Trigger trigger = createGenericCronTrigger("CronRuleTrigger", "0 * * * * ?");
 
         ruleBuilder(sr).withName("CronRule").withTrigger(trigger).activate();
+        
+        logger.info("cron activated");
     };
 }
 ```
 
-## ItemChanged rule
+## ItemChanged Rule
 
 ```java
 
@@ -150,7 +170,7 @@ public class ItemChangedRule extends ScriptBase {
 }
 ```
 
-## addon actions
+## Addon Actions
 
 ```java
 
@@ -167,14 +187,14 @@ public class SendMail extends ScriptBase {
     protected void onLoad() {
 
         ThingActions thingActions = actions.get("mail", "mail:smtp:mailSender");
-        actions.invoke(thingActions, "mail_at_receiver", "a subject", "mailconten Java script onload()");
+        actions.invoke(thingActions, "mail_at_receiver", "a subject", "mailcontent Java script onload()");
 
         logger.info("mail sent");
     }
 }
 ```
 
-## static actions
+## Static Actions
 
 ```java
 
@@ -249,9 +269,10 @@ public class PersistItems extends ScriptBase {
 }
 ```
   
-## Groovy port
+## Groovy Port
 
 This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy)
+It does not use syntactic sugar of ScriptBase, only pure openHAB JSR 223.
 
 ```java
 import java.util.ArrayList;
