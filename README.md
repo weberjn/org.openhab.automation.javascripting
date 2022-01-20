@@ -28,7 +28,7 @@ The Java class is loaded, compiled into memory and its onLoad() method executed.
 
 # Project  for scripts
 
-To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies.
+To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies and a dependency to javarules, of course.
 
 * create a folder in the openhab addons bundle tree
 * copy the pom.xml of a binding 

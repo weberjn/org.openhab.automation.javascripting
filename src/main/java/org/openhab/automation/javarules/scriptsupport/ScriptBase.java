@@ -243,7 +243,7 @@ public abstract class ScriptBase {
         return bindings;
     }
 
-    // to be implemented by the GroovyPort.java
+    // to be implemented by the concrete script class
     protected abstract void onLoad();
 
     // Utility methods
