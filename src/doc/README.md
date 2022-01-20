@@ -17,6 +17,8 @@ Java Rules do not see other rule classes. Each one has its own ClassLoader. You 
 
 You can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
 
+The bundle manifest pulls in bundles from openHAB 3.2.0 so javarules only works under 3.2.0
+
 # Test
 
 Put one of the sample Java classes below into conf/automation/jsr223/
