@@ -21,7 +21,9 @@ The bundle manifest pulls in bundles from openHAB 3.2.0 so javarules only works 
 
 # Test
 
-Put one of the sample Java classes below into conf/automation/jsr223/
+Take from the sample Java classes below and put them into conf/automation/jsr223/
+
+(they are all in src/test/java)
 
 The Java class is loaded, compiled into memory and its onLoad() method executed.
 
