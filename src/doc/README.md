@@ -13,7 +13,7 @@ Currently this is Beta code.
 
 All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
 
-Java Rules do not see other rule classes. Each one has its own ClassLoader. You cannot use own library jars, except if you build OSGI bundles.
+Java Rules do not see other rule classes. Each one has its own ClassLoader. You cannot use own library jars, except if you build [OSGI bundles](# library-code).
 
 You can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
 
@@ -37,6 +37,18 @@ To have a script compile without errors in Eclipse, it should be in a Java proje
 * change groupId and artifactId
 * import the folder as maven project into Eclipse
 * link conf/automation/jsr223 as external source folder
+
+# Library Code 
+
+Java Rules has `DynamicImport-Package: *` so it can access code in other bundles. 
+
+So put your code into a bundle as in this sample: [org.openhab.automation.javarules.ext](../org.openhab.automation.javarules.ext) 
+
+This Class pulls in a class from it.
+
+```java
+#include("src/test/java/Extlib.java")
+```
 
 # Sample Scripts
 
@@ -85,7 +97,7 @@ ${H2} Persistence
   
 ${H2} Groovy Port
 
-This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy)
+This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy).
 It does not use syntactic sugar of ScriptBase, only pure openHAB JSR 223.
 
 ```java

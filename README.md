@@ -12,7 +12,7 @@ Currently this is Beta code.
 
 All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
 
-Java Rules do not see other rule classes. Each one has its own ClassLoader. You cannot use own library jars, except if you build OSGI bundles.
+Java Rules do not see other rule classes. Each one has its own ClassLoader. You cannot use own library jars, except if you build [OSGI bundles](# library-code).
 
 You can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
 
@@ -37,6 +37,37 @@ To have a script compile without errors in Eclipse, it should be in a Java proje
 * import the folder as maven project into Eclipse
 * link conf/automation/jsr223 as external source folder
 
+# Library Code 
+
+Java Rules has `DynamicImport-Package: *` so it can access code in other bundles. 
+
+So put your code into a bundle as in this sample: [org.openhab.automation.javarules.ext](../org.openhab.automation.javarules.ext) 
+
+This Class pulls in a class from it.
+
+```java
+
+import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Extlib extends ScriptBase {
+
+    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.ext");
+
+    @Override
+    protected void onLoad() {
+
+        String s = "";
+
+        // commented out, haven't got the dependency to .ext here
+        // s = org.openhab.automation.javarules.ext.T.ID;
+
+        logger.info("ext done, got: " + s);
+    }
+}
+```
+
 # Sample Scripts
 
 The samples are all in [src/test/java](src/test/java).
@@ -59,17 +90,15 @@ public class EventBusExamples extends ScriptBase {
 
     private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.eventbus");
 
-    
-    
     @Override
     protected void onLoad() {
 
         events.sendCommand("Livingroom_Light", "OFF");
 
         Item item = itemRegistry.get("Morning_Temperature");
-        
-        ((NumberItem)item).setState(new DecimalType(0.0f));
-        
+
+        ((NumberItem) item).setState(new DecimalType(0.0f));
+
         events.postUpdate(item, 37.2f);
 
         Number state = (Number) item.getState();
@@ -80,8 +109,7 @@ public class EventBusExamples extends ScriptBase {
         state = (Number) item.getState();
         logger.info("new State again: {}", state.floatValue());
 
-        
-        logger.info("eventbus done");  
+        logger.info("eventbus done");
     }
 }
 ```
@@ -122,7 +150,7 @@ public class CronRule extends ScriptBase {
         Trigger trigger = createGenericCronTrigger("CronRuleTrigger", "0 * * * * ?");
 
         ruleBuilder(sr).withName("CronRule").withTrigger(trigger).activate();
-        
+
         logger.info("cron activated");
     };
 }
@@ -271,7 +299,7 @@ public class PersistItems extends ScriptBase {
   
 ## Groovy Port
 
-This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy)
+This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy).
 It does not use syntactic sugar of ScriptBase, only pure openHAB JSR 223.
 
 ```java

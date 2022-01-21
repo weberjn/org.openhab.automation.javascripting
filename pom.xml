@@ -14,6 +14,7 @@
 
   <name>openHAB Add-ons :: Bundles :: Automation :: Java Rules</name>
 
+
   <build>
     <plugins>
       <plugin>

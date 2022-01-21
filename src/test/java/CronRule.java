@@ -31,7 +31,7 @@ public class CronRule extends ScriptBase {
         Trigger trigger = createGenericCronTrigger("CronRuleTrigger", "0 * * * * ?");
 
         ruleBuilder(sr).withName("CronRule").withTrigger(trigger).activate();
-        
+
         logger.info("cron activated");
     };
 }

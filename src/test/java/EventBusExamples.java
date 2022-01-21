@@ -13,17 +13,15 @@ public class EventBusExamples extends ScriptBase {
 
     private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.eventbus");
 
-    
-    
     @Override
     protected void onLoad() {
 
         events.sendCommand("Livingroom_Light", "OFF");
 
         Item item = itemRegistry.get("Morning_Temperature");
-        
-        ((NumberItem)item).setState(new DecimalType(0.0f));
-        
+
+        ((NumberItem) item).setState(new DecimalType(0.0f));
+
         events.postUpdate(item, 37.2f);
 
         Number state = (Number) item.getState();
@@ -34,7 +32,6 @@ public class EventBusExamples extends ScriptBase {
         state = (Number) item.getState();
         logger.info("new State again: {}", state.floatValue());
 
-        
-        logger.info("eventbus done");  
+        logger.info("eventbus done");
     }
 }
