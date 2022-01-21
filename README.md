@@ -12,7 +12,7 @@ Currently this is Beta code.
 
 All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
 
-Java Rules do not see other rule classes. Each one has its own ClassLoader. You cannot use own library jars, except if you build [OSGI bundles](# library-code).
+Java Rules do not see other rule classes. Each one has its own ClassLoader. You cannot use own library jars, except if you build [OSGI bundles](#-library-code).
 
 You can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
 
@@ -41,7 +41,7 @@ To have a script compile without errors in Eclipse, it should be in a Java proje
 
 Java Rules has `DynamicImport-Package: *` so it can access code in other bundles. 
 
-So put your code into a bundle as in this sample: [org.openhab.automation.javarules.ext](../org.openhab.automation.javarules.ext) 
+So put your code into a bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javarules.ext 
 
 This Class pulls in a class from it.
 
