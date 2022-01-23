@@ -43,31 +43,6 @@ Java Rules has `DynamicImport-Package: *` so it can access code in other bundles
 
 So put your code into a bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javarules.ext 
 
-This Class pulls in a class from it.
-
-```java
-
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class Extlib extends ScriptBase {
-
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.ext");
-
-    @Override
-    protected void onLoad() {
-
-        String s = "";
-
-        // commented out, haven't got the dependency to .ext here
-        // s = org.openhab.automation.javarules.ext.T.ID;
-
-        logger.info("ext done, got: " + s);
-    }
-}
-```
-
 # Sample Scripts
 
 The samples are all in [src/test/java](src/test/java).

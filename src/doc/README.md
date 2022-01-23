@@ -44,12 +44,6 @@ Java Rules has `DynamicImport-Package: *` so it can access code in other bundles
 
 So put your code into a bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javarules.ext 
 
-This Class pulls in a class from it.
-
-```java
-#include("src/test/java/Extlib.java")
-```
-
 # Sample Scripts
 
 The samples are all in [src/test/java](src/test/java).
