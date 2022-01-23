@@ -11,21 +11,23 @@ Currently this is Beta code.
 
 # Programming Hints
 
-All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
+* All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
 
-Java Rules do not see other rule classes. Each one has its own ClassLoader. You cannot use own library jars, except if you build [OSGI bundles](#library-code).
+* Java Rules do not see other rule classes. Each one has its own ClassLoader. 
 
-You can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
+* you can use libraries if you package them as [OSGI bundles](#library-code).
 
-The bundle manifest pulls in bundles from openHAB 3.2.0 so javarules only works under 3.2.0
+* you can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
+
+* the bundle manifest pulls in bundles from openHAB 3.2.0 so javarules only works under 3.2.0
 
 # Test
 
-Take from the sample Java classes below and put them into conf/automation/jsr223/
+Put the sample Java classes into conf/automation/jsr223/
 
 (they are all in src/test/java)
 
-The Java class is loaded, compiled into memory and its onLoad() method executed.
+A Java class is loaded, compiled into memory and its onLoad() method executed.
 
 # Project  for Scripts
 
@@ -42,7 +44,7 @@ To have a script compile without errors in Eclipse, it should be in a Java proje
 
 Java Rules has `DynamicImport-Package: *` so it can access code in other bundles. 
 
-So put your code into a bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javarules.ext 
+Bundle your code as OSGI bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javarules.ext 
 
 # Sample Scripts
 
