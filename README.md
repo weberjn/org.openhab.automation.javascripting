@@ -22,7 +22,9 @@ Currently this is Beta code.
 
 # Test
 
-Put the sample Java classes into conf/automation/jsr223/
+* Copy org.openhab.automation.javarules-3.2.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javarules/releases) link).
+
+* Copy from the sample Java classes into conf/automation/jsr223/
 
 (they are all in src/test/java)
 
