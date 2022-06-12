@@ -196,9 +196,10 @@ public abstract class ScriptBase {
      * called by JavaRuleEngine on script load
      */
 
-    public Map<String, Object> eval(Map<String, Object> bindings) {
-        this.bindings = bindings;
-
+    public void eval() {
+    	
+    	logger.trace("eval()");
+    	
         Object se = bindings.get("se");
 
         self = new ScriptExtensionManagerWrapperProxy(se);
@@ -231,15 +232,19 @@ public abstract class ScriptBase {
             logger.error(e.getMessage(), e);
             throw e;
         }
-
-        return this.bindings;
     }
 
+    /*
+     * called by JavaRuleEngine before eval()
+     */
     public void setBindings(Map<String, Object> bindings) {
         this.bindings = bindings;
     }
 
-    protected Map<String, Object> getBindings() {
+    /*
+     * called by JavaRuleEngine after eval()
+     */
+    public Map<String, Object> getBindings() {
         return bindings;
     }
 

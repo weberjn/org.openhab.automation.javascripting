@@ -19,8 +19,6 @@ import java.util.Map;
 
 import javax.script.ScriptEngine;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.automation.module.script.AbstractScriptEngineFactory;
 import org.openhab.core.automation.module.script.ScriptEngineFactory;
 import org.osgi.framework.BundleContext;
@@ -32,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.obermuhlner.scriptengine.java.JavaScriptEngine;
 import ch.obermuhlner.scriptengine.java.JavaScriptEngineFactory;
+import ch.obermuhlner.scriptengine.java.packagelisting.PackageResourceListingStrategy;
 
 /**
  * This is an implementation of a {@link ScriptEngineFactory} for Java, based on
@@ -41,24 +40,20 @@ import ch.obermuhlner.scriptengine.java.JavaScriptEngineFactory;
  * @author Jürgen Weber - Initial contribution
  */
 @Component(service = ScriptEngineFactory.class)
-@NonNullByDefault
 public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(JavaRuleEngineFactory.class);
 
-    @Nullable
     BundleWiring bundleWiring;
 
-    @Nullable
     private JavaScriptEngineFactory javaScriptEngineFactory;
 
-    @Nullable
-    private PackageResourceLister packageLister;
+    private PackageResourceListingStrategy osgiPackageResourceListingStrategy;
 
     @Activate
     protected void activate(BundleContext context, Map<String, ?> config) {
 
-        packageLister = new PackageResourceLister() {
+        osgiPackageResourceListingStrategy = new PackageResourceListingStrategy() {
 
             @Override
             public Collection<String> listResources(String packageName) {
@@ -80,13 +75,16 @@ public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
     }
 
     @Override
-    public @Nullable ScriptEngine createScriptEngine(String scriptType) {
+    public ScriptEngine createScriptEngine(String scriptType) {
         if (getScriptTypes().contains(scriptType)) {
 
             JavaScriptEngine engine = (JavaScriptEngine) javaScriptEngineFactory.getScriptEngine();
 
             engine.setExecutionStrategyFactory(new EntryExecutionStrategyFactory());
-            engine.setPackageLister(packageLister);
+
+            engine.setPackageResourceListingStrategy(osgiPackageResourceListingStrategy);
+            
+            engine.setBindingStrategy(new BulkBindingStrategy());
 
             return engine;
         }

@@ -4,6 +4,7 @@
         <feature>openhab-runtime-base</feature>
         <feature>wrap</feature>
         <bundle>mvn:org.openhab.addons.bundles/org.openhab.automation.javarules/3.2.0</bundle>
+        <bundle>wrap:mvn:ch.obermuhlner/java-scriptengine/2.1.0</bundle>
         <bundle>wrap:mvn:org.lastnpe.eea/eea-all/2.2.1</bundle>
     </feature>
 </features>

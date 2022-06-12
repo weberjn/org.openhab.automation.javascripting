@@ -19,17 +19,14 @@ public class EntryExecutionStrategyFactory implements ExecutionStrategyFactory {
         return new ExecutionStrategy() {
 
             @Override
-            public Entry<Object, Map<String, Object>> execute(Object instance, Map<String, Object> bindings)
-                    throws ScriptException {
+        	public Object execute(Object instance) throws ScriptException {
                 try {
 
                     ScriptBase script = (ScriptBase) instance;
 
-                    Map<String, Object> sret = script.eval(bindings);
+                    script.eval();
 
-                    Entry<Object, Map<String, Object>> e = new AbstractMap.SimpleEntry<>(null, sret);
-
-                    return e;
+                    return null;
 
                 } catch (Exception e) {
                     throw new ScriptException(e);
