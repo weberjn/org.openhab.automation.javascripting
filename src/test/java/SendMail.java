@@ -1,12 +1,12 @@
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.thing.binding.ThingActions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SendMail extends ScriptBase {
+public class SendMail extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.mail");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.mail");
 
     @Override
     protected void onLoad() {

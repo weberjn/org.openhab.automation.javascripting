@@ -13,6 +13,7 @@ target/
 src-gen/
 xtend-gen/
 .history/
+tmp/
 
 */plugin.xml_gen
 **/.settings/org.eclipse.*

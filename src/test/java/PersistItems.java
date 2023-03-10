@@ -1,13 +1,13 @@
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.extensions.PersistenceExtensions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PersistItems extends ScriptBase {
+public class PersistItems extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.persist");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.persist");
 
     @Override
     protected void onLoad() {

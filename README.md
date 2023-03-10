@@ -1,5 +1,5 @@
 
-# openHAB 3.2 Java Scripting
+# openHAB 3.4 Java Scripting
 
 This openHAB add-on provides support for JSR 223 scripts written in Java.
 
@@ -18,19 +18,22 @@ Currently this is Beta code.
 
 * you can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
 
-* the bundle manifest pulls in bundles from openHAB 3.2.0 so javarules only works under 3.2.0
+* the bundle manifest pulls in bundles from openHAB 3.4.0 so javarules only works under 3.4.0
 
 # Test
 
-* Copy org.openhab.automation.javarules-3.2.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javarules/releases) link).
+* Copy org.openhab.automation.javarules-3.4.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javarules/releases) link).
 
 * Copy from the sample Java classes into conf/automation/jsr223/
 
 (they are all in src/test/java)
 
-A Java class is loaded, compiled into memory and its onLoad() method executed.
+A Java class is loaded, compiled into memory and its onLoad() method executed. A Python or JS Script is
+evalated during load, this is simulated with the onLoad() method. So, rules can be defined programmatically
+in onLoad().
+Or, you can annotate public instance variables of type SimpleRule. See the CronRule sample.
 
-# Project  for Scripts
+# Project for Scripts
 
 To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies and a dependency to javarules, of course.
 
@@ -51,6 +54,75 @@ Bundle your code as OSGI bundle as in this sample: https://github.com/weberjn/or
 
 The samples are all in [src/test/java](src/test/java).
 
+## Item change rules, annotation based.
+
+```java
+
+import java.util.Map;
+
+import org.openhab.automation.javascripting.annotations.ItemStateUpdateTrigger;
+import org.openhab.automation.javascripting.annotations.Rule;
+import org.openhab.automation.javascripting.scriptsupport.Script;
+import org.openhab.core.automation.Action;
+import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
+import org.openhab.core.items.Item;
+import org.openhab.core.library.types.OnOffType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MPDSilencer extends Script {
+
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.mpdrules");
+
+    private OnOffType mpd_previous_stop_state;
+
+    @Rule(name = "PhoneRingingRule")
+    @ItemStateUpdateTrigger(id = "PhoneRingingTrigger", item = "PhoneRinging")
+    public SimpleRule phoneRingingRule = new SimpleRule() {
+
+        @Override
+        public Object execute(Action module, Map<String, ?> inputs) {
+
+            logger.info("phone", "phone ringing {}", inputs.get("state"));
+
+            Item mpd_stop = itemRegistry.get("mpd_music_player_pi_stop");
+
+            OnOffType mpd_stop_state = (OnOffType) mpd_stop.getState();
+
+            mpd_previous_stop_state = mpd_stop_state;
+
+            if (mpd_stop_state == OnOffType.OFF) {
+                events.sendCommand("mpd_music_player_pi_stop", "ON");
+            }
+
+            return "";
+        }
+    };
+
+    @Rule(name = "PhoneIdleRule")
+    @ItemStateUpdateTrigger(id = "PhoneIdleTrigger", item = "PhoneIdle")
+    public SimpleRule phoneIdleRule = new SimpleRule() {
+
+        @Override
+        public Object execute(Action module, Map<String, ?> inputs) {
+
+            logger.info("phone", "phone idle {}", inputs.get("state"));
+
+            if (mpd_previous_stop_state == OnOffType.OFF) {
+                events.sendCommand("mpd_music_player_pi_stop", "OFF");
+            }
+
+            return "";
+        }
+    };
+
+    @Override
+    protected void onLoad() {
+        logger.info("phone", "rules loaded");
+    };
+}
+```
+
 ## Changing Items
 
 ```java
@@ -58,19 +130,21 @@ The samples are all in [src/test/java](src/test/java).
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.items.Item;
 import org.openhab.core.library.items.NumberItem;
 import org.openhab.core.library.types.DecimalType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EventBusExamples extends ScriptBase {
+public class EventBusExamples extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.eventbus");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.eventbus");
 
     @Override
     protected void onLoad() {
+
+        logger.info("Java onLoad()");
 
         events.sendCommand("Livingroom_Light", "OFF");
 
@@ -99,38 +173,36 @@ public class EventBusExamples extends ScriptBase {
 
 import java.util.Map;
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.annotations.CronTrigger;
+import org.openhab.automation.javascripting.annotations.Rule;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.automation.Action;
-import org.openhab.core.automation.Trigger;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CronRule extends ScriptBase {
+public class CronRule extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.cronrule");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.cronrule");
 
     public int counter = 1;
 
+    @Rule(name = "CronRule")
+    @CronTrigger(id = "CronTrigger", cronExpression = "0 * * * * ?")
+    public SimpleRule cronrule = new SimpleRule() {
+
+        @Override
+        public Object execute(Action module, Map<String, ?> inputs) {
+
+            logger.info("Java cronrule execute {}", counter++);
+
+            return "";
+        }
+    };
+
     @Override
     protected void onLoad() {
-
-        SimpleRule sr = new SimpleRule() {
-
-            @Override
-            public Object execute(Action module, Map<String, ?> inputs) {
-
-                logger.info("Java cronrule execute {}", counter++);
-
-                return null;
-            }
-        };
-
-        Trigger trigger = createGenericCronTrigger("CronRuleTrigger", "0 * * * * ?");
-
-        ruleBuilder(sr).withName("CronRule").withTrigger(trigger).activate();
-
-        logger.info("cron activated");
+        logger.info("Java onLoad()");
     };
 }
 ```
@@ -141,21 +213,23 @@ public class CronRule extends ScriptBase {
 
 import java.util.Map;
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.automation.Action;
 import org.openhab.core.automation.Trigger;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItemChangedRule extends ScriptBase {
+public class ItemChangedRule extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.itemrule");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.itemrule");
 
     public int counter = 1;
 
     @Override
     protected void onLoad() {
+
+        logger.info("Java onLoad()");
 
         SimpleRule sr = new SimpleRule() {
 
@@ -164,7 +238,7 @@ public class ItemChangedRule extends ScriptBase {
 
                 logger.info("Java cronrule execute {}", counter++);
 
-                return null;
+                return "";
             }
         };
 
@@ -181,14 +255,14 @@ public class ItemChangedRule extends ScriptBase {
 
 ```java
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.thing.binding.ThingActions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SendMail extends ScriptBase {
+public class SendMail extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.mail");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.mail");
 
     @Override
     protected void onLoad() {
@@ -205,15 +279,15 @@ public class SendMail extends ScriptBase {
 
 ```java
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.model.script.actions.Exec;
 import org.openhab.core.model.script.actions.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StaticActions extends ScriptBase {
+public class StaticActions extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.actions");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javarules.actions");
 
     @Override
     protected void onLoad() {
@@ -232,14 +306,14 @@ public class StaticActions extends ScriptBase {
 
 ```java
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.transform.actions.Transformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Transformations extends ScriptBase {
+public class Transformations extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.transform");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javarules.transform");
 
     @Override
     protected void onLoad() {
@@ -254,15 +328,15 @@ public class Transformations extends ScriptBase {
 
 ```java
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.items.Item;
 import org.openhab.core.persistence.extensions.PersistenceExtensions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PersistItems extends ScriptBase {
+public class PersistItems extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.persist");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.persist");
 
     @Override
     protected void onLoad() {
@@ -287,7 +361,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.automation.Action;
 import org.openhab.core.automation.Trigger;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
@@ -299,9 +373,9 @@ import org.slf4j.LoggerFactory;
 /*
  * @author weberjn
  */
-public class GroovyPort extends ScriptBase {
+public class GroovyPort extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.script");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.script");
 
     public int counter = 1;
 
@@ -314,7 +388,7 @@ public class GroovyPort extends ScriptBase {
 
                 logger.info("Java execute {},  inputs: {} ", counter++, inputs);
 
-                return null;
+                return "";
             }
         };
 

@@ -1,12 +1,12 @@
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.transform.actions.Transformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Transformations extends ScriptBase {
+public class Transformations extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.transform");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javarules.transform");
 
     @Override
     protected void onLoad() {

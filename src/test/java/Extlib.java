@@ -1,11 +1,11 @@
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Extlib extends ScriptBase {
+public class Extlib extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.ext");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.ext");
 
     @Override
     protected void onLoad() {

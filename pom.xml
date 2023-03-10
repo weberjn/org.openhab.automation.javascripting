@@ -7,12 +7,12 @@
   <parent>
     <groupId>org.openhab.addons.bundles</groupId>
     <artifactId>org.openhab.addons.reactor.bundles</artifactId>
-    <version>3.2.0</version>
+    <version>3.4.2</version>
   </parent>
 
-  <artifactId>org.openhab.automation.javarules</artifactId>
+  <artifactId>org.openhab.automation.javascripting</artifactId>
 
-  <name>openHAB Add-ons :: Bundles :: Automation :: Java Rules</name>
+  <name>openHAB Add-ons :: Bundles :: Automation :: Java Scripting</name>
 
   <dependencies>
     <dependency>

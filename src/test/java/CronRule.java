@@ -1,37 +1,35 @@
 
 import java.util.Map;
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.annotations.CronTrigger;
+import org.openhab.automation.javascripting.annotations.Rule;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.automation.Action;
-import org.openhab.core.automation.Trigger;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CronRule extends ScriptBase {
+public class CronRule extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.cronrule");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.cronrule");
 
     public int counter = 1;
 
+    @Rule(name = "CronRule")
+    @CronTrigger(id = "CronTrigger", cronExpression = "0 * * * * ?")
+    public SimpleRule cronrule = new SimpleRule() {
+
+        @Override
+        public Object execute(Action module, Map<String, ?> inputs) {
+
+            logger.info("Java cronrule execute {}", counter++);
+
+            return "";
+        }
+    };
+
     @Override
     protected void onLoad() {
-
-        SimpleRule sr = new SimpleRule() {
-
-            @Override
-            public Object execute(Action module, Map<String, ?> inputs) {
-
-                logger.info("Java cronrule execute {}", counter++);
-
-                return null;
-            }
-        };
-
-        Trigger trigger = createGenericCronTrigger("CronRuleTrigger", "0 * * * * ?");
-
-        ruleBuilder(sr).withName("CronRule").withTrigger(trigger).activate();
-
-        logger.info("cron activated");
+        logger.info("Java onLoad()");
     };
 }

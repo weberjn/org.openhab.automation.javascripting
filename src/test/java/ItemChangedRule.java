@@ -1,21 +1,23 @@
 
 import java.util.Map;
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.automation.Action;
 import org.openhab.core.automation.Trigger;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItemChangedRule extends ScriptBase {
+public class ItemChangedRule extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.itemrule");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.itemrule");
 
     public int counter = 1;
 
     @Override
     protected void onLoad() {
+
+        logger.info("Java onLoad()");
 
         SimpleRule sr = new SimpleRule() {
 
@@ -24,7 +26,7 @@ public class ItemChangedRule extends ScriptBase {
 
                 logger.info("Java cronrule execute {}", counter++);
 
-                return null;
+                return "";
             }
         };
 

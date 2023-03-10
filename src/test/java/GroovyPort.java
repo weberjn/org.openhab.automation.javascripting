@@ -3,7 +3,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openhab.automation.javarules.scriptsupport.ScriptBase;
+import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.automation.Action;
 import org.openhab.core.automation.Trigger;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 /*
  * @author weberjn
  */
-public class GroovyPort extends ScriptBase {
+public class GroovyPort extends Script {
 
-    private Logger logger = LoggerFactory.getLogger("org.openhab.core.automation.javarules.script");
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.script");
 
     public int counter = 1;
 
@@ -30,7 +30,7 @@ public class GroovyPort extends ScriptBase {
 
                 logger.info("Java execute {},  inputs: {} ", counter++, inputs);
 
-                return null;
+                return "";
             }
         };
 

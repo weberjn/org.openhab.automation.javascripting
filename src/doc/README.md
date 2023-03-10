@@ -1,6 +1,6 @@
 #set( $H2 = '##' )
 
-# openHAB 3.2 Java Scripting
+# openHAB 3.4 Java Scripting
 
 This openHAB add-on provides support for JSR 223 scripts written in Java.
 
@@ -19,19 +19,22 @@ Currently this is Beta code.
 
 * you can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
 
-* the bundle manifest pulls in bundles from openHAB 3.2.0 so javarules only works under 3.2.0
+* the bundle manifest pulls in bundles from openHAB 3.4.0 so javarules only works under 3.4.0
 
 # Test
 
-* Copy org.openhab.automation.javarules-3.2.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javarules/releases) link).
+* Copy org.openhab.automation.javarules-3.4.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javarules/releases) link).
 
 * Copy from the sample Java classes into conf/automation/jsr223/
 
 (they are all in src/test/java)
 
-A Java class is loaded, compiled into memory and its onLoad() method executed.
+A Java class is loaded, compiled into memory and its onLoad() method executed. A Python or JS Script is
+evalated during load, this is simulated with the onLoad() method. So, rules can be defined programmatically
+in onLoad().
+Or, you can annotate public instance variables of type SimpleRule. See the CronRule sample.
 
-# Project  for Scripts
+# Project for Scripts
 
 To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies and a dependency to javarules, of course.
 
@@ -48,9 +51,22 @@ Java Rules has `DynamicImport-Package: *` so it can access code in other bundles
 
 Bundle your code as OSGI bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javarules.ext 
 
+# Building
+
+Get and mvn install java-scriptengine (you have to symlink ch.obermuhlner.scriptengine.java/src to make the Maven
+build work).
+
+Clone Java Scripting under openhab-addons/bundles and run mvn install
+
 # Sample Scripts
 
 The samples are all in [src/test/java](src/test/java).
+
+${H2} Item change rules, annotation based.
+
+```java
+#include("src/test/java/MPDSilencer.java")
+```
 
 ${H2} Changing Items
 

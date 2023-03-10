@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.automation.javarules.internal;
+package org.openhab.automation.javascripting.internal;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -83,8 +83,10 @@ public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
             engine.setExecutionStrategyFactory(new EntryExecutionStrategyFactory());
 
             engine.setPackageResourceListingStrategy(osgiPackageResourceListingStrategy);
-            
+
             engine.setBindingStrategy(new BulkBindingStrategy());
+
+            engine.setCompilationOptions(Arrays.asList("-g"));
 
             return engine;
         }
