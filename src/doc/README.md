@@ -4,14 +4,11 @@
 
 This openHAB add-on provides support for JSR 223 scripts written in Java.
 
-It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine)
-which is included here in a hacked copy.
-
-Currently this is Beta code.
+It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine).
 
 # Programming Hints
 
-* All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javarules.scriptsupport.ScriptBase](src/main/java/org/openhab/automation/javarules/scriptsupport/ScriptBase.java)
+* All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javascripting.scriptsupport.Script](src/main/java/org/openhab/automation/javascripting/scriptsupport/Script.java)
 
 * Java Rules do not see other rule classes. Each one has its own ClassLoader. 
 
@@ -23,7 +20,7 @@ Currently this is Beta code.
 
 # Test
 
-* Copy org.openhab.automation.javarules-3.4.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javarules/releases) link).
+* Copy org.openhab.automation.javascripting-3.4.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
 
 * Copy from the sample Java classes into conf/automation/jsr223/
 
@@ -36,20 +33,22 @@ Or, you can annotate public instance variables of type SimpleRule. See the CronR
 
 # Project for Scripts
 
-To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies and a dependency to javarules, of course.
+To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies and a dependency to javascripting.
 
 * create a folder in the openhab addons bundle tree
 * copy the pom.xml of a binding 
 * remove everything in the pom but the parent
 * change groupId and artifactId
 * import the folder as maven project into Eclipse
-* link conf/automation/jsr223 as external source folder
+* create the Java scripts in src/main/java in the default package 
+* if the source compiles without errors, copy it to conf/automation/jsr223
+
 
 # Library Code 
 
 Java Rules has `DynamicImport-Package: *` so it can access code in other bundles. 
 
-Bundle your code as OSGI bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javarules.ext 
+Bundle your code as OSGI bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javascripting.ext 
 
 # Building
 

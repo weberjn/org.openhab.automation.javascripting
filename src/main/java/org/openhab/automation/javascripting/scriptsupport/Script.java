@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class Script {
 
-	protected static Logger logger = LoggerFactory.getLogger(Script.class);
+    protected static Logger logger = LoggerFactory.getLogger(Script.class);
 
     protected Map<String, Object> bindings;
 
