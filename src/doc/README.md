@@ -50,7 +50,7 @@ Java Rules has `DynamicImport-Package: *` so it can access code in other bundles
 
 Bundle your code as OSGI bundle as in this sample: https://github.com/weberjn/org.openhab.automation.javascripting.ext 
 
-# Building
+# Building the Addon
 
 Get and mvn install java-scriptengine (you have to symlink ch.obermuhlner.scriptengine.java/src to make the Maven
 build work).

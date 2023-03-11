@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.obermuhlner.scriptengine.java.JavaScriptEngine;
-import ch.obermuhlner.scriptengine.java.JavaScriptEngineFactory;
 import ch.obermuhlner.scriptengine.java.packagelisting.PackageResourceListingStrategy;
 
 /**
@@ -40,13 +39,13 @@ import ch.obermuhlner.scriptengine.java.packagelisting.PackageResourceListingStr
  * @author Jürgen Weber - Initial contribution
  */
 @Component(service = ScriptEngineFactory.class)
-public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
+public class JavaScriptEngineFactory extends AbstractScriptEngineFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaRuleEngineFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(JavaScriptEngineFactory.class);
 
     BundleWiring bundleWiring;
 
-    private JavaScriptEngineFactory javaScriptEngineFactory;
+    private ch.obermuhlner.scriptengine.java.JavaScriptEngineFactory javaScriptEngineFactory;
 
     private PackageResourceListingStrategy osgiPackageResourceListingStrategy;
 
@@ -61,7 +60,7 @@ public class JavaRuleEngineFactory extends AbstractScriptEngineFactory {
             }
         };
 
-        javaScriptEngineFactory = new JavaScriptEngineFactory();
+        javaScriptEngineFactory = new ch.obermuhlner.scriptengine.java.JavaScriptEngineFactory();
 
         bundleWiring = context.getBundle().adapt(BundleWiring.class);
 
