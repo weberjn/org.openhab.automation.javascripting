@@ -13,7 +13,7 @@ public class CronRule extends Script {
 
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.cronrule");
 
-    public int counter = 1;
+    private int counter = 1;
 
     @Rule(name = "CronRule")
     @CronTrigger(id = "CronTrigger", cronExpression = "0 * * * * ?")

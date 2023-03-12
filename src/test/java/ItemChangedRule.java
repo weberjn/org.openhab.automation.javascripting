@@ -12,7 +12,7 @@ public class ItemChangedRule extends Script {
 
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.itemrule");
 
-    public int counter = 1;
+    private int counter = 1;
 
     @Override
     protected void onLoad() {
@@ -24,7 +24,7 @@ public class ItemChangedRule extends Script {
             @Override
             public Object execute(Action module, Map<String, ?> inputs) {
 
-                logger.info("Java cronrule execute {}", counter++);
+                logger.info("Java execute {}", counter++);
 
                 return "";
             }

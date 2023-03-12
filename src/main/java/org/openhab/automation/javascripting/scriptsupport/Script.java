@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openhab.automation.javascripting.annotations.RuleAnnotationParser;
+import org.openhab.automation.javascripting.annotation.RuleAnnotationParser;
 import org.openhab.core.audio.AudioManager;
 import org.openhab.core.automation.Trigger;
 import org.openhab.core.automation.module.script.rulesupport.shared.ScriptedAutomationManager;
@@ -23,6 +23,9 @@ import org.openhab.core.voice.VoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * all Java Scripts inherit this
+ */
 public abstract class Script {
 
     protected static Logger logger = LoggerFactory.getLogger(Script.class);

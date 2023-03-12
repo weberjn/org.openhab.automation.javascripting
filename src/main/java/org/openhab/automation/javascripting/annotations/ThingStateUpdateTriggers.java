@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target(ElementType.FIELD)
-@interface ThingStateUpdateTriggers {
+public @interface ThingStateUpdateTriggers {
     ThingStateUpdateTrigger[] value();
 }
