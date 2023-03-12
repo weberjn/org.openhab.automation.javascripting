@@ -1,5 +1,5 @@
 
-# openHAB 3.4 Java Scripting
+# openHAB Java Scripting
 
 This openHAB add-on provides support for JSR 223 scripts written in Java.
 
@@ -7,7 +7,10 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 
 # Programming Hints
 
-* All Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javascripting.scriptsupport.Script](src/main/java/org/openhab/automation/javascripting/scriptsupport/Script.java)
+* all Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javascripting.scriptsupport.Script](src/main/java/org/openhab/automation/javascripting/scriptsupport/Script.java)
+
+* When the openHAB ScriptFileWatcher detects a new .java File in conf/automation/jsr223 
+  it is loaded, compiled into memory, parsed for @Rule annotations and the rules are activated. Then the onLoad() method is executed.
 
 * Java Rules do not see other rule classes. Each one has its own ClassLoader. 
 
@@ -15,11 +18,11 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 
 * you can use openHAB classes from the packages listed in [bnd.bnd](bnd.bnd).
 
-* the bundle manifest pulls in bundles from openHAB 3.4.0 so javarules only works under 3.4.0
+* openHAB Java Scripting requires openHAB 3.3.0 or later
 
 # Test
 
-* Copy org.openhab.automation.javascripting-3.4.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
+* Copy org.openhab.automation.javascripting-3.3.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
 
 * Copy from the sample Java classes into conf/automation/jsr223/
 
@@ -60,7 +63,7 @@ Clone Java Scripting under openhab-addons/bundles and run mvn install
 
 The samples are all in [src/test/java](src/test/java).
 
-## Item change rules, annotation based.
+## Item change rules, annotation based
 
 ```java
 
@@ -173,7 +176,7 @@ public class EventBusExamples extends Script {
 }
 ```
 
-## Cron Rule
+## Cron Rule, annotation based
 
 ```java
 
@@ -359,7 +362,7 @@ public class PersistItems extends Script {
 ## Groovy Port
 
 This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openhab.org/docs/configuration/jsr223.html#groovy).
-It does not use syntactic sugar of ScriptBase, only pure openHAB JSR 223.
+It does not use syntactic sugar of the Script base class, only pure openHAB JSR 223.
 
 ```java
 import java.util.ArrayList;
