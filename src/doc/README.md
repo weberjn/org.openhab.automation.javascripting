@@ -21,6 +21,8 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 
 * openHAB Java Scripting requires openHAB 3.3.0 or later
 
+* Debugging: start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpoints. 
+
 # Test
 
 * Copy org.openhab.automation.javascripting-3.3.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
@@ -55,7 +57,7 @@ Bundle your code as OSGI bundle as in this sample: https://github.com/weberjn/or
 
 # Building the Addon
 
-Get and mvn install java-scriptengine (you have to symlink ch.obermuhlner.scriptengine.java/src to make the Maven
+Clone [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine) and mvn install (symlink ch.obermuhlner.scriptengine.java/src to make the Maven
 build work).
 
 Clone Java Scripting under openhab-addons/bundles and run mvn install
@@ -110,6 +112,23 @@ ${H2} Persistence
 ```java
 #include("src/test/java/PersistItems.java")
 ```
+
+${H2} Write to a File
+
+Set a new temperature
+
+```Shell
+openhab> openhab:update Morning_Temperature 37.7
+```
+
+```java
+#include("src/test/java/FileWriteRule.java")
+```
+```Shell
+$ cat /tmp/Morning_Temperature.txt
+37.700001
+```
+
   
 ${H2} Groovy Port
 

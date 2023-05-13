@@ -20,6 +20,8 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 
 * openHAB Java Scripting requires openHAB 3.3.0 or later
 
+* Debugging: start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpoints. 
+
 # Test
 
 * Copy org.openhab.automation.javascripting-3.3.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
@@ -54,7 +56,7 @@ Bundle your code as OSGI bundle as in this sample: https://github.com/weberjn/or
 
 # Building the Addon
 
-Get and mvn install java-scriptengine (you have to symlink ch.obermuhlner.scriptengine.java/src to make the Maven
+Clone [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine) and mvn install (symlink ch.obermuhlner.scriptengine.java/src to make the Maven
 build work).
 
 Clone Java Scripting under openhab-addons/bundles and run mvn install
@@ -358,6 +360,78 @@ public class PersistItems extends Script {
     }
 }
 ```
+
+## Write to a File
+
+Set a new temperature
+
+```Shell
+openhab> openhab:update Morning_Temperature 37.7
+```
+
+```java
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Map;
+
+import org.openhab.automation.javascripting.annotations.ItemStateUpdateTrigger;
+import org.openhab.automation.javascripting.annotations.Rule;
+import org.openhab.automation.javascripting.scriptsupport.Script;
+import org.openhab.core.automation.Action;
+import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
+import org.openhab.core.items.Item;
+import org.openhab.core.library.types.OnOffType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class FileWriteRule extends Script {
+
+    private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.writefile");
+
+    @Rule(name = "TemperatureToFileRule")
+    @ItemStateUpdateTrigger(id = "TemperatureTrigger", item = "Morning_Temperature")
+    public SimpleRule temperatureToFileRule = new SimpleRule() {
+
+        @Override
+        public Object execute(Action module, Map<String, ?> inputs) {
+
+        	logger.info("@ItemStateUpdateTrigger Morning_Temperature");
+        	
+            Item item = itemRegistry.get("Morning_Temperature");
+            
+            Number state = (Number) item.getState();
+            
+            Path path = Paths.get("/tmp/Morning_Temperature.txt");
+            
+            try {
+				Files.writeString(path, String.format("%f%n", state.floatValue()), 
+						StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+			} catch (IOException e) {
+				logger.error("", e);
+				throw new RuntimeException(e);
+			}
+            
+            return "";
+        }
+        
+    };
+    
+    @Override
+    protected void onLoad() {
+        logger.info("Java onLoad()");
+    }
+
+}
+```
+```Shell
+$ cat /tmp/Morning_Temperature.txt
+37.700001
+```
+
   
 ## Groovy Port
 
