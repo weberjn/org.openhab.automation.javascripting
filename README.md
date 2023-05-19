@@ -363,12 +363,6 @@ public class PersistItems extends Script {
 
 ## Write to a File
 
-Set a new temperature
-
-```Shell
-openhab> openhab:update Morning_Temperature 37.7
-```
-
 ```java
 
 import java.io.IOException;
@@ -427,6 +421,12 @@ public class FileWriteRule extends Script {
 
 }
 ```
+Set a new temperature
+
+```Shell
+openhab> openhab:update Morning_Temperature 37.7
+```
+
 ```Shell
 $ cat /tmp/Morning_Temperature.txt
 37.700001

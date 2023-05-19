@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.automation.javascripting.annotation.RuleAnnotationParser;
 import org.openhab.core.audio.AudioManager;
 import org.openhab.core.automation.Trigger;
@@ -92,66 +93,86 @@ public abstract class Script {
         }
 
         public Object sendCommand(String itemName, String commandString) {
-            return invoke("sendCommand", itemName, commandString);
+            try {
+                Method m = scriptBusEvent.getClass().getMethod("sendCommand", String.class, String.class);
+                return m.invoke(scriptBusEvent, itemName, commandString);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public Object sendCommand(Item item, Number number) {
-            return invoke("sendCommand", item, number);
+            try {
+                Method m = scriptBusEvent.getClass().getMethod("sendCommand", Item.class, Number.class);
+                return m.invoke(scriptBusEvent, item, number);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public Object sendCommand(Item item, String commandString) {
-            return invoke("sendCommand", item, commandString);
+            try {
+                Method m = scriptBusEvent.getClass().getMethod("sendCommand", Item.class, String.class);
+                return m.invoke(scriptBusEvent, item, commandString);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public Object sendCommand(Item item, Command command) {
-            return invoke("sendCommand", item, command);
+            try {
+                Method m = scriptBusEvent.getClass().getMethod("sendCommand", Item.class, Command.class);
+                return m.invoke(scriptBusEvent, item, command);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         public Object postUpdate(Item item, Number state) {
-            Object o;
             try {
                 Method m = scriptBusEvent.getClass().getMethod("postUpdate", Item.class, Number.class);
-                o = m.invoke(scriptBusEvent, item, state);
+                return m.invoke(scriptBusEvent, item, state);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            return o;
         }
 
         public Object postUpdate(Item item, String stateAsString) {
-            return invoke("postUpdate", item, stateAsString);
-        }
-
-        public Object postUpdate(String itemName, String stateString) {
-            return invoke("postUpdate", itemName, stateString);
-        }
-
-        public Object postUpdate(Item item, State state) {
-            return invoke("postUpdate", item, state);
-        }
-
-        public Map<Item, State> storeStates(Item... items) {
-            Object o = invoke("storeStates", items);
-            return (Map<Item, State>) o;
-        }
-
-        private Object invoke(String method, Object... params) {
-            Object o;
-
-            Class<?>[] paramClasses = new Class<?>[params.length];
-
-            for (int i = 0; i < params.length; i++) {
-                paramClasses[i] = params[i].getClass();
-            }
             try {
-
-                Method m = scriptBusEvent.getClass().getMethod(method, paramClasses);
-                o = m.invoke(scriptBusEvent, params);
+                Method m = scriptBusEvent.getClass().getMethod("postUpdate", Item.class, String.class);
+                return m.invoke(scriptBusEvent, item, stateAsString);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            return o;
         }
+
+        public Object postUpdate(String itemName, String stateString) {
+            try {
+                Method m = scriptBusEvent.getClass().getMethod("postUpdate", String.class, String.class);
+                return m.invoke(scriptBusEvent, itemName, stateString);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public Object postUpdate(Item item, State state) {
+            try {
+                Method m = scriptBusEvent.getClass().getMethod("postUpdate", Item.class, String.class);
+                return m.invoke(scriptBusEvent, item, state);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public Map<Item, State> storeStates(Item... items) {
+            try {
+                Method m = scriptBusEvent.getClass().getMethod("storeStates", Item[].class);
+                return (Map<Item, State>)m.invoke(scriptBusEvent, items);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 
     protected static class ScriptThingActionsProxy {

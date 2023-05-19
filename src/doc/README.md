@@ -115,15 +115,15 @@ ${H2} Persistence
 
 ${H2} Write to a File
 
+```java
+#include("src/test/java/FileWriteRule.java")
+```
 Set a new temperature
 
 ```Shell
 openhab> openhab:update Morning_Temperature 37.7
 ```
 
-```java
-#include("src/test/java/FileWriteRule.java")
-```
 ```Shell
 $ cat /tmp/Morning_Temperature.txt
 37.700001
