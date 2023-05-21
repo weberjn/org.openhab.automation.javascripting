@@ -40,13 +40,17 @@ Or, you can annotate public instance variables of type SimpleRule. See the CronR
 
 To have a script compile without errors in Eclipse, it should be in a Java project with openHAB dependencies and a dependency to javascripting.
 
-* create a folder in the openhab addons bundle tree
-* copy the pom.xml of a binding 
-* remove everything in the pom but the parent
+* create a folder with a Maven project:
+* use this [src/doc/pom.xml](src/doc/pom.xml) as template 
+* adapt parent relativePath
 * change groupId and artifactId
 * import the folder as maven project into Eclipse
 * create the Java scripts in src/main/java in the default package 
 * if the source compiles without errors, copy it to conf/automation/jsr223
+
+```sh
+mvn  -DskipChecks clean install
+```
 
 
 # Library Code 
@@ -129,6 +133,14 @@ $ cat /tmp/Morning_Temperature.txt
 37.700001
 ```
 
+${H2} Json Rule
+
+This rule is triggered bei either of two items, creates a Json String from their states and sends it to a third item 
+(which should be linked to an MQTT command topic, on which a Python script could listen and feed to an e-paper display).
+
+```java
+#include("src/test/java/JsonRule.java")
+```
   
 ${H2} Groovy Port
 

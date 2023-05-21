@@ -378,7 +378,6 @@ import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.openhab.core.automation.Action;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
 import org.openhab.core.items.Item;
-import org.openhab.core.library.types.OnOffType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -393,32 +392,30 @@ public class FileWriteRule extends Script {
         @Override
         public Object execute(Action module, Map<String, ?> inputs) {
 
-        	logger.info("@ItemStateUpdateTrigger Morning_Temperature");
-        	
+            logger.info("@ItemStateUpdateTrigger Morning_Temperature");
+
             Item item = itemRegistry.get("Morning_Temperature");
-            
+
             Number state = (Number) item.getState();
-            
+
             Path path = Paths.get("/tmp/Morning_Temperature.txt");
-            
+
             try {
-				Files.writeString(path, String.format("%f%n", state.floatValue()), 
-						StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-			} catch (IOException e) {
-				logger.error("", e);
-				throw new RuntimeException(e);
-			}
-            
+                Files.writeString(path, String.format("%f%n", state.floatValue()), StandardOpenOption.CREATE,
+                        StandardOpenOption.APPEND);
+            } catch (IOException e) {
+                logger.error("", e);
+                throw new RuntimeException(e);
+            }
+
             return "";
         }
-        
     };
-    
+
     @Override
     protected void onLoad() {
         logger.info("Java onLoad()");
     }
-
 }
 ```
 Set a new temperature

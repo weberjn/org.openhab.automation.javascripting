@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.automation.javascripting.annotation.RuleAnnotationParser;
 import org.openhab.core.audio.AudioManager;
 import org.openhab.core.automation.Trigger;
@@ -167,12 +166,11 @@ public abstract class Script {
         public Map<Item, State> storeStates(Item... items) {
             try {
                 Method m = scriptBusEvent.getClass().getMethod("storeStates", Item[].class);
-                return (Map<Item, State>)m.invoke(scriptBusEvent, items);
+                return (Map<Item, State>) m.invoke(scriptBusEvent, items);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-
     }
 
     protected static class ScriptThingActionsProxy {
