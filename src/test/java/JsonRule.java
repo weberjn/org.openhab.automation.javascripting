@@ -24,7 +24,7 @@ public class JsonRule extends Script {
 
     final String outsideTemperatureItem = "OutsideTemperature";
     final String salonTemperatureItem = "SalonTemperature";
-    
+
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Rule(name = "JsonRule")
@@ -95,7 +95,7 @@ public class JsonRule extends Script {
 
             y += 30;
         }
-        
+
         DecimalType dts = itemRegistry.get(salonTemperatureItem).getStateAs(DecimalType.class);
 
         if (dts != null) {
@@ -111,7 +111,7 @@ public class JsonRule extends Script {
 
             y += 30;
         }
-        
+
         screen.put("screenobjects", ops);
 
         Gson gson = new Gson();

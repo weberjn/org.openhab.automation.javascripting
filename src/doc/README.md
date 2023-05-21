@@ -21,7 +21,12 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 
 * openHAB Java Scripting requires openHAB 3.3.0 or later
 
-* Debugging: start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpoints. 
+# Remote Debug
+
+start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpoints.
+
+![screenshot](src/doc/EclipseDebug.png?raw=true)
+ 
 
 # Test
 
