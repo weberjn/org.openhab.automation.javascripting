@@ -141,11 +141,18 @@ $ cat /tmp/Morning_Temperature.txt
 ${H2} Json Rule
 
 This rule is triggered bei either of two items, creates a Json String from their states and sends it to a third item 
-(which should be linked to an MQTT command topic, on which a Python script could listen and feed to an e-paper display).
+(which should be linked to an MQTT command topic, on which a Python script could listen and feed an e-paper display).
 
 ```java
 #include("src/test/java/JsonRule.java")
 ```
+
+```Shell  
+openhab> openhab:update  OutsideTemperature 27
+Update has been sent successfully.
+openhab> openhab:status EPaper_Screen_Json
+{"screenobjects":[{"x":10,"y":0,"text":"@ 2023-06-04 20:07:42","type":"text"},{"x":10,"y":30,"text":"Temp Outside: 27.0","type":"text"}]}
+```  
   
 ${H2} Groovy Port
 
