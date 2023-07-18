@@ -12,7 +12,7 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 * When the openHAB ScriptFileWatcher detects a new .java File in conf/automation/jsr223 
   it is loaded, compiled into memory, parsed for @Rule annotations and the rules are activated. Then the onLoad() method is executed.
 
-* Java Rules do not see other rule classes. Each one has its own ClassLoader. 
+* Java Rules do not see other rule classes. Each one has its own ClassLoader. This is an consequence of the way openHAB JSR223 and the Java ScriptEngine work, each script is loaded separately and so has its own memory classloader.
 
 * you can use libraries if you package them as [OSGI bundles](#library-code).
 
@@ -20,7 +20,7 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 
 * openHAB Java Scripting requires openHAB 3.3.0 or later
 
-# Remote Debug
+# Remote Debugging
 
 start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpoints.
 
