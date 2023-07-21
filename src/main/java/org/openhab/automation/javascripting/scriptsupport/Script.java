@@ -1,3 +1,16 @@
+/**
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
+
 package org.openhab.automation.javascripting.scriptsupport;
 
 import java.lang.reflect.Method;
@@ -23,9 +36,12 @@ import org.openhab.core.voice.VoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- * all Java Scripts inherit this
+/**
+ * Base Class for all Java Scripts
+ * 
+ * @author Jürgen Weber - Initial contribution
  */
+
 public abstract class Script {
 
     protected static Logger logger = LoggerFactory.getLogger(Script.class);
@@ -253,7 +269,7 @@ public abstract class Script {
             parseAnnotations();
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error("Script eval", e);
             throw e;
         }
     }

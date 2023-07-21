@@ -25,6 +25,8 @@
 
   <build>
     <plugins>
+
+
       <plugin>
         <groupId>com.github.vdubus</groupId>
         <artifactId>velocity-maven-plugin</artifactId>
@@ -48,6 +50,35 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <sourceDirectories>${project.build.sourceDirectory}</sourceDirectories>
+        </configuration>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-script-sources</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>src/script/java</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 

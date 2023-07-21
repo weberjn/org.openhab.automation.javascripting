@@ -33,7 +33,7 @@ start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpo
 
 * Copy from the sample Java classes into conf/automation/jsr223/
 
-(they are all in src/test/java)
+(they are all in src/script/java)
 
 A Java class is loaded, compiled into memory and its onLoad() method executed. A Python or JS Script is
 evalated during load, this is simulated with the onLoad() method. So, rules can be defined programmatically
@@ -72,7 +72,7 @@ Clone Java Scripting under openhab-addons/bundles and run mvn install
 
 # Sample Scripts
 
-The samples are all in [src/test/java](src/test/java).
+The samples are all in [src/script/java](src/script/java).
 
 ## Item change rules, annotation based
 

@@ -34,7 +34,7 @@ start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpo
 
 * Copy from the sample Java classes into conf/automation/jsr223/
 
-(they are all in src/test/java)
+(they are all in src/script/java)
 
 A Java class is loaded, compiled into memory and its onLoad() method executed. A Python or JS Script is
 evalated during load, this is simulated with the onLoad() method. So, rules can be defined programmatically
@@ -73,59 +73,59 @@ Clone Java Scripting under openhab-addons/bundles and run mvn install
 
 # Sample Scripts
 
-The samples are all in [src/test/java](src/test/java).
+The samples are all in [src/script/java](src/script/java).
 
 ${H2} Item change rules, annotation based
 
 ```java
-#include("src/test/java/MPDSilencer.java")
+#include("src/script/java/MPDSilencer.java")
 ```
 
 ${H2} Changing Items
 
 ```java
-#include("src/test/java/EventBusExamples.java")
+#include("src/script/java/EventBusExamples.java")
 ```
 
 ${H2} Cron Rule, annotation based
 
 ```java
-#include("src/test/java/CronRule.java")
+#include("src/script/java/CronRule.java")
 ```
 
 ${H2} ItemChanged Rule
 
 ```java
-#include("src/test/java/ItemChangedRule.java")
+#include("src/script/java/ItemChangedRule.java")
 ```
 
 ${H2} Addon Actions
 
 ```java
-#include("src/test/java/SendMail.java")
+#include("src/script/java/SendMail.java")
 ```
 
 ${H2} Static Actions
 
 ```java
-#include("src/test/java/StaticActions.java")
+#include("src/script/java/StaticActions.java")
 ```
 
 ${H2} Transformations
 
 ```java
-#include("src/test/java/Transformations.java")
+#include("src/script/java/Transformations.java")
 ```
 ${H2} Persistence
 
 ```java
-#include("src/test/java/PersistItems.java")
+#include("src/script/java/PersistItems.java")
 ```
 
 ${H2} Write to a File
 
 ```java
-#include("src/test/java/FileWriteRule.java")
+#include("src/script/java/FileWriteRule.java")
 ```
 Set a new temperature
 
@@ -144,7 +144,7 @@ This rule is triggered bei either of two items, creates a Json String from their
 (which should be linked to an MQTT command topic, on which a Python script could listen and feed an e-paper display).
 
 ```java
-#include("src/test/java/JsonRule.java")
+#include("src/script/java/JsonRule.java")
 ```
 
 ```Shell  
@@ -160,6 +160,6 @@ This class is ported from the [openHAB JSR 223 Groovy Sample](https://www.openha
 It does not use syntactic sugar of the Script base class, only pure openHAB JSR 223.
 
 ```java
-#include("src/test/java/GroovyPort.java")
+#include("src/script/java/GroovyPort.java")
 ```
 
