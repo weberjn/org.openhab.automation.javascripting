@@ -14,8 +14,11 @@
 package org.openhab.automation.javascripting.annotation;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.openhab.automation.javascripting.annotations.ChannelEventTrigger;
@@ -61,156 +64,174 @@ public class RuleAnnotationParser {
 
         logger.debug("parse: {}", c.getName());
 
-        Field[] fields = c.getDeclaredFields();
-        for (Field f : fields) {
+        AccessibleObject[] fields = c.getDeclaredFields();
+        AccessibleObject[] methods = c.getDeclaredMethods();
 
-            Class<?> ftype = f.getType();
+        List<AccessibleObject> members = new ArrayList<>();
+        Collections.addAll(members, fields);
+        Collections.addAll(members, methods);
+        for (AccessibleObject m : members) {
 
-            if (org.openhab.core.automation.Rule.class.isAssignableFrom(ftype)
-                    && SimpleRuleActionHandler.class.isAssignableFrom(ftype)) {
+            if (!m.isAnnotationPresent(Rule.class)) {
+                break;
+            }
 
-                if (f.isAnnotationPresent(Rule.class)) {
-                    Annotation ra = f.getAnnotation(Rule.class);
+            SimpleRule simpleRule;
+            String memberName;
+            if (m instanceof Field fieldMember) {
+                Class<?> ftype = fieldMember.getType();
+                if (!org.openhab.core.automation.Rule.class.isAssignableFrom(ftype)
+                        || !SimpleRuleActionHandler.class.isAssignableFrom(ftype)) {
+                    break;
+                }
+                simpleRule = (SimpleRule) (fieldMember.get(script));
+                memberName = fieldMember.getName();
+            } else if (m instanceof Method methodMember) {
+                try {
+                    simpleRule = new SimpleMethodRule(script, methodMember);
+                } catch (RuleParserException e) {
+                    logger.error("Cannot parse rule", e);
+                    break;
+                }
+                memberName = methodMember.getName();
+            } else {
+                break;
+            }
 
-                    Rule r = (Rule) ra;
-                    String ruleName = r.name();
-                    String fieldname = f.getName();
+            Annotation ra = m.getAnnotation(Rule.class);
 
-                    List<Trigger> triggerList = new ArrayList<Trigger>();
+            Rule r = (Rule) ra;
+            String ruleName = r.name();
 
-                    Object object = f.get(script);
-                    SimpleRule simpleRule = (SimpleRule) object;
+            List<Trigger> triggerList = new ArrayList<Trigger>();
 
-                    Annotation[] as = f.getDeclaredAnnotations();
-                    for (Annotation a : as) {
+            Annotation[] as = m.getDeclaredAnnotations();
+            for (Annotation a : as) {
 
-                        if (a instanceof CronTrigger) {
-                            CronTrigger trigger = (CronTrigger) a;
+                if (a instanceof CronTrigger) {
+                    CronTrigger trigger = (CronTrigger) a;
 
-                            createCronTrigger(triggerList, trigger);
-                        }
+                    createCronTrigger(triggerList, trigger);
+                }
 
-                        if (a instanceof CronTriggers) {
-                            CronTriggers cronTriggers = (CronTriggers) a;
+                if (a instanceof CronTriggers) {
+                    CronTriggers cronTriggers = (CronTriggers) a;
 
-                            for (CronTrigger trigger : cronTriggers.value()) {
-                                createCronTrigger(triggerList, trigger);
-                            }
-                        }
-
-                        if (a instanceof SystemTrigger) {
-                            SystemTrigger trigger = (SystemTrigger) a;
-
-                            createSystemTrigger(triggerList, trigger);
-                        }
-
-                        if (a instanceof SystemTriggers) {
-                            SystemTriggers triggers = (SystemTriggers) a;
-
-                            for (SystemTrigger trigger : triggers.value()) {
-                                createSystemTrigger(triggerList, trigger);
-                            }
-                        }
-
-                        if (a instanceof ItemStateChangeTrigger) {
-                            ItemStateChangeTrigger trigger = (ItemStateChangeTrigger) a;
-
-                            createItemStateChangeTrigger(triggerList, trigger);
-                        }
-
-                        if (a instanceof ItemStateChangeTriggers) {
-                            ItemStateChangeTriggers triggers = (ItemStateChangeTriggers) a;
-
-                            for (ItemStateChangeTrigger trigger : triggers.value()) {
-                                createItemStateChangeTrigger(triggerList, trigger);
-                            }
-                        }
-
-                        if (a instanceof ItemStateUpdateTrigger) {
-                            ItemStateUpdateTrigger trigger = (ItemStateUpdateTrigger) a;
-
-                            createItemStateUpdateTrigger(triggerList, trigger);
-                        }
-
-                        if (a instanceof ItemStateUpdateTriggers) {
-                            ItemStateUpdateTriggers triggers = (ItemStateUpdateTriggers) a;
-
-                            for (ItemStateUpdateTrigger trigger : triggers.value()) {
-                                createItemStateUpdateTrigger(triggerList, trigger);
-                            }
-                        }
-
-                        if (a instanceof ThingStateUpdateTrigger) {
-                            ThingStateUpdateTrigger trigger = (ThingStateUpdateTrigger) a;
-
-                            createThingStateUpdateTrigger(triggerList, trigger);
-                        }
-
-                        if (a instanceof ThingStateUpdateTriggers) {
-                            ThingStateUpdateTriggers triggers = (ThingStateUpdateTriggers) a;
-
-                            for (ThingStateUpdateTrigger trigger : triggers.value()) {
-                                createThingStateUpdateTrigger(triggerList, trigger);
-                            }
-                        }
-
-                        if (a instanceof ThingStateChangeTrigger) {
-                            ThingStateChangeTrigger trigger = (ThingStateChangeTrigger) a;
-
-                            createThingStateChangeTrigger(triggerList, trigger);
-                        }
-
-                        if (a instanceof ThingStateChangeTriggers) {
-                            ThingStateChangeTriggers triggers = (ThingStateChangeTriggers) a;
-
-                            for (ThingStateChangeTrigger trigger : triggers.value()) {
-                                createThingStateChangeTrigger(triggerList, trigger);
-                            }
-                        }
-
-                        if (a instanceof ItemCommandTrigger) {
-                            ItemCommandTrigger trigger = (ItemCommandTrigger) a;
-
-                            createItemCommandTrigger(triggerList, trigger);
-                        }
-
-                        if (a instanceof ItemCommandTriggers) {
-                            ItemCommandTriggers triggers = (ItemCommandTriggers) a;
-
-                            for (ItemCommandTrigger trigger : triggers.value()) {
-                                createItemCommandTrigger(triggerList, trigger);
-                            }
-                        }
-
-                        if (a instanceof ChannelEventTrigger) {
-                            ChannelEventTrigger trigger = (ChannelEventTrigger) a;
-
-                            createChannelEventTrigger(triggerList, trigger);
-                        }
-
-                        if (a instanceof ChannelEventTriggers) {
-                            ChannelEventTriggers triggers = (ChannelEventTriggers) a;
-
-                            for (ChannelEventTrigger trigger : triggers.value()) {
-                                createChannelEventTrigger(triggerList, trigger);
-                            }
-                        }
-
+                    for (CronTrigger trigger : cronTriggers.value()) {
+                        createCronTrigger(triggerList, trigger);
                     }
+                }
 
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("field {}", fieldname);
-                        logger.debug("@Rule(name = {}", ruleName);
-                        for (Trigger trigger : triggerList) {
-                            logger.debug("Trigger(id = {}, uid = {})", trigger.getId(), trigger.getTypeUID());
-                            logger.debug("Configuration: {}", trigger.getConfiguration().toString());
-                        }
+                if (a instanceof SystemTrigger) {
+                    SystemTrigger trigger = (SystemTrigger) a;
+
+                    createSystemTrigger(triggerList, trigger);
+                }
+
+                if (a instanceof SystemTriggers) {
+                    SystemTriggers triggers = (SystemTriggers) a;
+
+                    for (SystemTrigger trigger : triggers.value()) {
+                        createSystemTrigger(triggerList, trigger);
                     }
+                }
 
-                    script.activateRule(ruleName, simpleRule, triggerList);
+                if (a instanceof ItemStateChangeTrigger) {
+                    ItemStateChangeTrigger trigger = (ItemStateChangeTrigger) a;
 
+                    createItemStateChangeTrigger(triggerList, trigger);
+                }
+
+                if (a instanceof ItemStateChangeTriggers) {
+                    ItemStateChangeTriggers triggers = (ItemStateChangeTriggers) a;
+
+                    for (ItemStateChangeTrigger trigger : triggers.value()) {
+                        createItemStateChangeTrigger(triggerList, trigger);
+                    }
+                }
+
+                if (a instanceof ItemStateUpdateTrigger) {
+                    ItemStateUpdateTrigger trigger = (ItemStateUpdateTrigger) a;
+
+                    createItemStateUpdateTrigger(triggerList, trigger);
+                }
+
+                if (a instanceof ItemStateUpdateTriggers) {
+                    ItemStateUpdateTriggers triggers = (ItemStateUpdateTriggers) a;
+
+                    for (ItemStateUpdateTrigger trigger : triggers.value()) {
+                        createItemStateUpdateTrigger(triggerList, trigger);
+                    }
+                }
+
+                if (a instanceof ThingStateUpdateTrigger) {
+                    ThingStateUpdateTrigger trigger = (ThingStateUpdateTrigger) a;
+
+                    createThingStateUpdateTrigger(triggerList, trigger);
+                }
+
+                if (a instanceof ThingStateUpdateTriggers) {
+                    ThingStateUpdateTriggers triggers = (ThingStateUpdateTriggers) a;
+
+                    for (ThingStateUpdateTrigger trigger : triggers.value()) {
+                        createThingStateUpdateTrigger(triggerList, trigger);
+                    }
+                }
+
+                if (a instanceof ThingStateChangeTrigger) {
+                    ThingStateChangeTrigger trigger = (ThingStateChangeTrigger) a;
+
+                    createThingStateChangeTrigger(triggerList, trigger);
+                }
+
+                if (a instanceof ThingStateChangeTriggers) {
+                    ThingStateChangeTriggers triggers = (ThingStateChangeTriggers) a;
+
+                    for (ThingStateChangeTrigger trigger : triggers.value()) {
+                        createThingStateChangeTrigger(triggerList, trigger);
+                    }
+                }
+
+                if (a instanceof ItemCommandTrigger) {
+                    ItemCommandTrigger trigger = (ItemCommandTrigger) a;
+
+                    createItemCommandTrigger(triggerList, trigger);
+                }
+
+                if (a instanceof ItemCommandTriggers) {
+                    ItemCommandTriggers triggers = (ItemCommandTriggers) a;
+
+                    for (ItemCommandTrigger trigger : triggers.value()) {
+                        createItemCommandTrigger(triggerList, trigger);
+                    }
+                }
+
+                if (a instanceof ChannelEventTrigger) {
+                    ChannelEventTrigger trigger = (ChannelEventTrigger) a;
+
+                    createChannelEventTrigger(triggerList, trigger);
+                }
+
+                if (a instanceof ChannelEventTriggers) {
+                    ChannelEventTriggers triggers = (ChannelEventTriggers) a;
+
+                    for (ChannelEventTrigger trigger : triggers.value()) {
+                        createChannelEventTrigger(triggerList, trigger);
+                    }
+                }
+
+            }
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("field {}", memberName);
+                logger.debug("@Rule(name = {}", ruleName);
+                for (Trigger trigger : triggerList) {
+                    logger.debug("Trigger(id = {}, uid = {})", trigger.getId(), trigger.getTypeUID());
+                    logger.debug("Configuration: {}", trigger.getConfiguration().toString());
                 }
             }
+
+            script.activateRule(ruleName, simpleRule, triggerList);
         }
     }
 

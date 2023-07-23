@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Repeatable(ThingStateUpdateTriggers.class)
-@Target(ElementType.FIELD)
+@Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface ThingStateUpdateTrigger {
     String id();
 
