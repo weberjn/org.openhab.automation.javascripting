@@ -1,7 +1,7 @@
 sitemap demo label="My home automation" {
     Frame label="Uptime" {
 
-		Text icon="time" label="uptime [JAVA(TimeTransformation.java):%s]" item=uptimeSeconds
+		Text icon="time" label="uptime [JAVA(SecHHMMSSTransformation.java):%s]" item=uptimeSeconds
     }
 }
 

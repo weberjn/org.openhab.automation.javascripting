@@ -285,7 +285,7 @@ a sitemap referencing a transformation in Java
 sitemap demo label="My home automation" {
     Frame label="Uptime" {
 
-		Text icon="time" label="uptime [JAVA(TimeTransformation.java):%s]" item=uptimeSeconds
+		Text icon="time" label="uptime [JAVA(SecHHMMSSTransformation.java):%s]" item=uptimeSeconds
     }
 }
 
@@ -300,7 +300,7 @@ import org.openhab.automation.javascripting.scriptsupport.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TimeTransformation  extends Script {
+public class SecHHMMSSTransformation extends Script {
 
 	private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.TR");
 	
@@ -313,11 +313,11 @@ public class TimeTransformation  extends Script {
 		
 		Duration d = Duration.ofSeconds(Long.parseLong(s));
 
-		String timeInHHMMSS = String.format("%02d:%02d:%02d", d.toHours(), d.toMinutesPart(), d.toSecondsPart());
+		String timeHHMMSS = String.format("%02d:%02d:%02d", d.toHours(), d.toMinutesPart(), d.toSecondsPart());
 
-		logger.info( "duration: {}", timeInHHMMSS);
+		logger.info( "duration: {}", timeHHMMSS);
 		
-		return timeInHHMMSS;
+		return timeHHMMSS;
 
 	}
 
