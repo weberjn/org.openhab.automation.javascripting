@@ -37,16 +37,19 @@ public class EntryExecutionStrategyFactory implements ExecutionStrategyFactory {
 
             @Override
             public Object execute(Object instance) throws ScriptException {
+
+                Object retval = null;
+
                 try {
                     if (instance instanceof Script) {
                         Script script = (Script) instance;
 
-                        script.eval();
+                        retval = script.eval();
                     } else {
-                        logger.info("cannot execute: {} not instance of ScriptBase",
-                                instance.getClass().getSimpleName());
+                        throw new ScriptException(String.format("cannot execute: %s not instance of %s",
+                                instance.getClass().getSimpleName(), Script.class.getName()));
                     }
-                    return null;
+                    return retval;
 
                 } catch (Exception e) {
                     throw new ScriptException(e);

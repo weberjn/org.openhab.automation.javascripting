@@ -1,7 +1,7 @@
 
 # openHAB Java Scripting
 
-This openHAB add-on provides support for JSR 223 scripts written in Java.
+This openHAB add-on provides support for JSR 223 scripts written in Java that can be used as rules or transformations.
 
 It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine).
 
@@ -10,9 +10,10 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 * all Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javascripting.scriptsupport.Script](src/main/java/org/openhab/automation/javascripting/scriptsupport/Script.java)
 
 * When the openHAB ScriptFileWatcher detects a new .java File in conf/automation/jsr223 
-  it is loaded, compiled into memory, parsed for @Rule annotations and the rules are activated. Then the onLoad() method is executed.
+  it is loaded, compiled into memory and its onLoad() method is executed.
+  Then it is parsed for @Rule annotations and the rules are activated.
 
-* Java Rules do not see other rule classes. Each one has its own ClassLoader. This is an consequence of the way openHAB JSR223 and the Java ScriptEngine work, each script is loaded separately and so has its own memory classloader.
+* Java script classes do not see other script classes. Each one has its own ClassLoader. This is an consequence of the way openHAB JSR223 and the Java ScriptEngine work, each script is loaded separately and so has its own memory classloader.
 
 * you can use libraries if you package them as [OSGI bundles](#library-code).
 
@@ -24,12 +25,12 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 
 start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpoints.
 
-![screenshot](src/doc/EclipseDebug.png?raw=true)
+![screenshot](src/doc/images/EclipseDebug.png?raw=true)
  
 
 # Test
 
-* Copy org.openhab.automation.javascripting-3.3.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
+* Copy org.openhab.automation.javascripting-VERSION.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
 
 * Copy from the sample Java classes into conf/automation/jsr223/
 
@@ -137,8 +138,9 @@ public class MPDSilencer extends Script {
     };
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
         logger.info("phone", "rules loaded");
+        return null;
     };
 }
 ```
@@ -162,7 +164,7 @@ public class EventBusExamples extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.eventbus");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         logger.info("Java onLoad()");
 
@@ -183,6 +185,8 @@ public class EventBusExamples extends Script {
         logger.info("new State again: {}", state.floatValue());
 
         logger.info("eventbus done");
+        
+        return null;
     }
 }
 ```
@@ -221,8 +225,9 @@ public class CronRule extends Script {
     };
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
         logger.info("Java onLoad()");
+        return null;
     };
 }
 ```
@@ -247,7 +252,7 @@ public class ItemChangedRule extends Script {
     private int counter = 1;
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         logger.info("Java onLoad()");
 
@@ -267,7 +272,55 @@ public class ItemChangedRule extends Script {
         ruleBuilder(sr).withName("BatteryLevelChanged").withTrigger(trigger).activate();
 
         logger.info("BatteryLevelChanged rule activated");
+        
+        return null;
     };
+}
+```
+## Transformation Script in Java
+
+a sitemap referencing a transformation in Java
+
+```java
+sitemap demo label="My home automation" {
+    Frame label="Uptime" {
+
+		Text icon="time" label="uptime [JAVA(TimeTransformation.java):%s]" item=uptimeSeconds
+    }
+}
+
+```
+
+and the transformation used (it must be in conf/transform)
+
+```java
+import java.time.Duration;
+
+import org.openhab.automation.javascripting.scriptsupport.Script;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TimeTransformation  extends Script {
+
+	private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.TR");
+	
+	@Override
+	protected Object onLoad() {
+		
+		logger.info("Java onLoad()");
+		
+		String s = (String)input;
+		
+		Duration d = Duration.ofSeconds(Long.parseLong(s));
+
+		String timeInHHMMSS = String.format("%02d:%02d:%02d", d.toHours(), d.toMinutesPart(), d.toSecondsPart());
+
+		logger.info( "duration: {}", timeInHHMMSS);
+		
+		return timeInHHMMSS;
+
+	}
+
 }
 ```
 
@@ -285,12 +338,14 @@ public class SendMail extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.mail");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         ThingActions thingActions = actions.get("mail", "mail:smtp:mailSender");
         actions.invoke(thingActions, "mail_at_receiver", "a subject", "mailcontent Java script onload()");
 
         logger.info("mail sent");
+        
+        return null;
     }
 }
 ```
@@ -310,7 +365,7 @@ public class StaticActions extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javarules.actions");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         String res = HTTP.sendHttpGetRequest("http://localhost/");
 
@@ -318,6 +373,8 @@ public class StaticActions extends Script {
         Exec.executeCommandLine("ssh", "nexus9", cmd);
 
         logger.info("static actions done");
+        
+        return null;
     }
 }
 ```
@@ -336,11 +393,13 @@ public class Transformations extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javarules.transform");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         String s = Transformation.transform("REGEX", ".*(hello).*", "hello, world");
 
         logger.info("transform done, got: " + s);
+        
+        return null;
     }
 }
 ```
@@ -359,13 +418,15 @@ public class PersistItems extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.persist");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         Item item = itemRegistry.get("Morning_Temperature");
 
         PersistenceExtensions.persist(item);
 
         logger.info("persist done");
+        
+        return null;
     }
 }
 ```
@@ -422,8 +483,9 @@ public class FileWriteRule extends Script {
     };
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
         logger.info("Java onLoad()");
+        return null;
     }
 }
 ```
@@ -501,9 +563,11 @@ public class JsonRule extends Script {
     };
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
         logger.info("Java onLoad()");
+        return null;
     };
+    
 
     private String createJson() {
         Map<String, List<Map<String, Object>>> screen = new HashMap<>();
@@ -605,7 +669,7 @@ public class GroovyPort extends Script {
 
     public int counter = 1;
 
-    protected void onLoad() {
+    protected Object onLoad() {
 
         SimpleRule sr = new SimpleRule() {
 
@@ -635,6 +699,8 @@ public class GroovyPort extends Script {
         automationManager.addRule(sr);
 
         logger.info("onLoad() done");
+        
+        return null;
     }
 }
 ```

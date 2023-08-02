@@ -2,7 +2,7 @@
 
 # openHAB Java Scripting
 
-This openHAB add-on provides support for JSR 223 scripts written in Java.
+This openHAB add-on provides support for JSR 223 scripts written in Java that can be used as rules or transformations.
 
 It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine).
 
@@ -11,9 +11,10 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 * all Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javascripting.scriptsupport.Script](src/main/java/org/openhab/automation/javascripting/scriptsupport/Script.java)
 
 * When the openHAB ScriptFileWatcher detects a new .java File in conf/automation/jsr223 
-  it is loaded, compiled into memory, parsed for @Rule annotations and the rules are activated. Then the onLoad() method is executed.
+  it is loaded, compiled into memory and its onLoad() method is executed.
+  Then it is parsed for @Rule annotations and the rules are activated.
 
-* Java Rules do not see other rule classes. Each one has its own ClassLoader. This is an consequence of the way openHAB JSR223 and the Java ScriptEngine work, each script is loaded separately and so has its own memory classloader.
+* Java script classes do not see other script classes. Each one has its own ClassLoader. This is an consequence of the way openHAB JSR223 and the Java ScriptEngine work, each script is loaded separately and so has its own memory classloader.
 
 * you can use libraries if you package them as [OSGI bundles](#library-code).
 
@@ -25,12 +26,12 @@ It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-script
 
 start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpoints.
 
-![screenshot](src/doc/EclipseDebug.png?raw=true)
+![screenshot](src/doc/images/EclipseDebug.png?raw=true)
  
 
 # Test
 
-* Copy org.openhab.automation.javascripting-3.3.0.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
+* Copy org.openhab.automation.javascripting-VERSION.jar into the addons folder (download via the [Releases](https://github.com/weberjn/org.openhab.automation.javascripting/releases) link).
 
 * Copy from the sample Java classes into conf/automation/jsr223/
 
@@ -97,6 +98,19 @@ ${H2} ItemChanged Rule
 
 ```java
 #include("src/script/java/ItemChangedRule.java")
+```
+${H2} Transformation Script in Java
+
+a sitemap referencing a transformation in Java
+
+```java
+#include("src/doc/sitemaps/timetranform.sitemap")
+```
+
+and the transformation used (it must be in conf/transform)
+
+```java
+#include("src/script/java/TimeTransformation.java")
 ```
 
 ${H2} Addon Actions

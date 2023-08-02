@@ -47,7 +47,8 @@ public class FileWriteRule extends Script {
     };
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
         logger.info("Java onLoad()");
+        return null;
     }
 }

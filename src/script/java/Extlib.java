@@ -8,7 +8,7 @@ public class Extlib extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.ext");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         String s = "";
 
@@ -16,5 +16,7 @@ public class Extlib extends Script {
         // s = org.openhab.automation.javarules.ext.T.ID;
 
         logger.info("ext done, got: " + s);
+        
+        return s;
     }
 }

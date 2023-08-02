@@ -9,11 +9,13 @@ public class SendMail extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.mail");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         ThingActions thingActions = actions.get("mail", "mail:smtp:mailSender");
         actions.invoke(thingActions, "mail_at_receiver", "a subject", "mailcontent Java script onload()");
 
         logger.info("mail sent");
+        
+        return null;
     }
 }

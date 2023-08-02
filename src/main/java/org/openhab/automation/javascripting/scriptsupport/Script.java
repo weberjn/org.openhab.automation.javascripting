@@ -69,6 +69,8 @@ public abstract class Script {
 
     protected AudioManager audio;
 
+    protected Object input;
+
     // ScriptExtensionManagerWrapper is in the bundle private
     // org.openhab.core.automation.module.script.internal.ScriptExtensionManagerWrapper
     // which we can only access by reflection (Java is not Groovy)
@@ -235,7 +237,7 @@ public abstract class Script {
      * called by JavaRuleEngine on script load
      */
 
-    public void eval() throws Exception {
+    public Object eval() throws Exception {
 
         logger.trace("eval()");
 
@@ -263,10 +265,18 @@ public abstract class Script {
 
         audio = (AudioManager) bindings.get("audio");
 
+        // input is set for transformations
+
+        input = bindings.get("input");
+
         try {
 
-            onLoad();
+            Object result;
+
+            result = onLoad();
             parseAnnotations();
+
+            return result;
 
         } catch (Exception e) {
             logger.error("Script eval", e);
@@ -289,7 +299,7 @@ public abstract class Script {
     }
 
     // to be implemented by the concrete script class
-    protected abstract void onLoad();
+    protected abstract Object onLoad();
 
     private void parseAnnotations() throws Exception {
         new RuleAnnotationParser(this).parse();

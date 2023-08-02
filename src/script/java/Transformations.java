@@ -9,10 +9,12 @@ public class Transformations extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javarules.transform");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         String s = Transformation.transform("REGEX", ".*(hello).*", "hello, world");
 
         logger.info("transform done, got: " + s);
+        
+        return null;
     }
 }

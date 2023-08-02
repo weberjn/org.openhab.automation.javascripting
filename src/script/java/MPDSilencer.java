@@ -58,7 +58,8 @@ public class MPDSilencer extends Script {
     };
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
         logger.info("phone", "rules loaded");
+        return null;
     };
 }

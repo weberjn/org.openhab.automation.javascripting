@@ -10,7 +10,7 @@ public class StaticActions extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javarules.actions");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         String res = HTTP.sendHttpGetRequest("http://localhost/");
 
@@ -18,5 +18,7 @@ public class StaticActions extends Script {
         Exec.executeCommandLine("ssh", "nexus9", cmd);
 
         logger.info("static actions done");
+        
+        return null;
     }
 }

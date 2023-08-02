@@ -15,7 +15,7 @@ public class ItemChangedRule extends Script {
     private int counter = 1;
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         logger.info("Java onLoad()");
 
@@ -35,5 +35,7 @@ public class ItemChangedRule extends Script {
         ruleBuilder(sr).withName("BatteryLevelChanged").withTrigger(trigger).activate();
 
         logger.info("BatteryLevelChanged rule activated");
+        
+        return null;
     };
 }

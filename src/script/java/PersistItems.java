@@ -10,12 +10,14 @@ public class PersistItems extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.persist");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         Item item = itemRegistry.get("Morning_Temperature");
 
         PersistenceExtensions.persist(item);
 
         logger.info("persist done");
+        
+        return null;
     }
 }

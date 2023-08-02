@@ -21,7 +21,7 @@ public class GroovyPort extends Script {
 
     public int counter = 1;
 
-    protected void onLoad() {
+    protected Object onLoad() {
 
         SimpleRule sr = new SimpleRule() {
 
@@ -51,5 +51,7 @@ public class GroovyPort extends Script {
         automationManager.addRule(sr);
 
         logger.info("onLoad() done");
+        
+        return null;
     }
 }

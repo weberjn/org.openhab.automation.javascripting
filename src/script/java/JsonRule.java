@@ -55,9 +55,11 @@ public class JsonRule extends Script {
     };
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
         logger.info("Java onLoad()");
+        return null;
     };
+    
 
     private String createJson() {
         Map<String, List<Map<String, Object>>> screen = new HashMap<>();

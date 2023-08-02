@@ -14,7 +14,7 @@ public class EventBusExamples extends Script {
     private Logger logger = LoggerFactory.getLogger("org.openhab.automation.javascripting.eventbus");
 
     @Override
-    protected void onLoad() {
+    protected Object onLoad() {
 
         logger.info("Java onLoad()");
 
@@ -35,5 +35,7 @@ public class EventBusExamples extends Script {
         logger.info("new State again: {}", state.floatValue());
 
         logger.info("eventbus done");
+        
+        return null;
     }
 }
