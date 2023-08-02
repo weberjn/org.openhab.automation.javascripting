@@ -1,3 +1,16 @@
+/**
+ * Copyright (c) 2010-2023 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
+
 package org.openhab.automation.javascripting.annotation;
 
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +24,10 @@ import org.openhab.core.automation.Action;
 import org.openhab.core.automation.module.script.rulesupport.shared.simple.SimpleRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+/**
+ * @author Gwendal Roulleau - Initial contribution
+ */
 
 public class SimpleMethodRule extends SimpleRule {
 
@@ -43,5 +60,4 @@ public class SimpleMethodRule extends SimpleRule {
         }
         return returnObject == null ? "" : returnObject;
     }
-
 }
