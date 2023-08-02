@@ -110,7 +110,7 @@ a sitemap referencing a transformation in Java
 and the transformation used (it must be in conf/transform)
 
 ```java
-#include("src/script/java/TimeTransformation.java")
+#include("src/script/java/SecHHMMSSTransformation.java")
 ```
 
 ${H2} Addon Actions
