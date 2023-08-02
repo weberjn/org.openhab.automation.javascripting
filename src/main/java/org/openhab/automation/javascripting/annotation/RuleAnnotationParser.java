@@ -70,19 +70,21 @@ public class RuleAnnotationParser {
         List<AccessibleObject> members = new ArrayList<>();
         Collections.addAll(members, fields);
         Collections.addAll(members, methods);
+
         for (AccessibleObject m : members) {
 
             if (!m.isAnnotationPresent(Rule.class)) {
-                break;
+                continue;
             }
 
             SimpleRule simpleRule;
             String memberName;
+
             if (m instanceof Field fieldMember) {
                 Class<?> ftype = fieldMember.getType();
                 if (!org.openhab.core.automation.Rule.class.isAssignableFrom(ftype)
                         || !SimpleRuleActionHandler.class.isAssignableFrom(ftype)) {
-                    break;
+                    continue;
                 }
                 simpleRule = (SimpleRule) (fieldMember.get(script));
                 memberName = fieldMember.getName();
@@ -91,11 +93,11 @@ public class RuleAnnotationParser {
                     simpleRule = new SimpleMethodRule(script, methodMember);
                 } catch (RuleParserException e) {
                     logger.error("Cannot parse rule", e);
-                    break;
+                    continue;
                 }
                 memberName = methodMember.getName();
             } else {
-                break;
+                continue;
             }
 
             Annotation ra = m.getAnnotation(Rule.class);

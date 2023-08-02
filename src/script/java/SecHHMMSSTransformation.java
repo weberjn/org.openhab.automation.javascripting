@@ -15,7 +15,13 @@ public class SecHHMMSSTransformation extends Script {
 		
 		String s = (String)input;
 		
-		Duration d = Duration.ofSeconds(Long.parseLong(s));
+		Duration d = null;
+		
+		try {
+			d = Duration.ofSeconds(Long.parseLong(s));
+		} catch (NumberFormatException e) {
+			return null;
+		}
 
 		String timeHHMMSS = String.format("%02d:%02d:%02d", d.toHours(), d.toMinutesPart(), d.toSecondsPart());
 

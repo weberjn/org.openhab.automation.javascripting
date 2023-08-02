@@ -44,6 +44,7 @@ public class SimpleMethodRule extends SimpleRule {
         if (parameters.length != 1) {
             throw new RuleParserException("We should have only one argument in method " + method.getName());
         }
+
         Parameter parameter = parameters[0];
         if (!(Map.class.isAssignableFrom(parameter.getType()))) {
             throw new RuleParserException("Argument of method " + method.getName() + "must be a map");

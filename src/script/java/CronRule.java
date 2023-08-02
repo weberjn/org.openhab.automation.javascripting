@@ -17,16 +17,12 @@ public class CronRule extends Script {
 
     @Rule(name = "CronRule")
     @CronTrigger(id = "CronTrigger", cronExpression = "0 * * * * ?")
-    public SimpleRule cronrule = new SimpleRule() {
+    public Object execute(Map<String, ?> inputs) {
 
-        @Override
-        public Object execute(Action module, Map<String, ?> inputs) {
+        logger.info("Java cronrule execute {}", counter++);
 
-            logger.info("Java cronrule execute {}", counter++);
-
-            return "";
-        }
-    };
+        return "";
+    }
 
     @Override
     protected Object onLoad() {

@@ -40,7 +40,10 @@ start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpo
 A Java class is loaded, compiled into memory and its onLoad() method executed. A Python or JS Script is
 evalated during load, this is simulated with the onLoad() method. So, rules can be defined programmatically
 in onLoad().
-Or, you can annotate public instance variables of type SimpleRule. See the CronRule sample.
+
+Or, you can annotate public instance variables of type SimpleRule. See the FileWriteRule sample.
+
+You can also directly annotate methods of the Script. See the CronRule sample.
 
 # Project for Scripts
 
@@ -88,7 +91,7 @@ ${H2} Changing Items
 #include("src/script/java/EventBusExamples.java")
 ```
 
-${H2} Cron Rule, annotation based
+${H2} Cron Rule, method annotation based
 
 ```java
 #include("src/script/java/CronRule.java")

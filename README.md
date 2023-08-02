@@ -39,7 +39,10 @@ start openHAB with start_debug.sh and remote debug from Eclipse, stop at breakpo
 A Java class is loaded, compiled into memory and its onLoad() method executed. A Python or JS Script is
 evalated during load, this is simulated with the onLoad() method. So, rules can be defined programmatically
 in onLoad().
-Or, you can annotate public instance variables of type SimpleRule. See the CronRule sample.
+
+Or, you can annotate public instance variables of type SimpleRule. See the FileWriteRule sample.
+
+You can also directly annotate methods of the Script. See the CronRule sample.
 
 # Project for Scripts
 
@@ -191,7 +194,7 @@ public class EventBusExamples extends Script {
 }
 ```
 
-## Cron Rule, annotation based
+## Cron Rule, method annotation based
 
 ```java
 
@@ -213,16 +216,12 @@ public class CronRule extends Script {
 
     @Rule(name = "CronRule")
     @CronTrigger(id = "CronTrigger", cronExpression = "0 * * * * ?")
-    public SimpleRule cronrule = new SimpleRule() {
+    public Object execute(Map<String, ?> inputs) {
 
-        @Override
-        public Object execute(Action module, Map<String, ?> inputs) {
+        logger.info("Java cronrule execute {}", counter++);
 
-            logger.info("Java cronrule execute {}", counter++);
-
-            return "";
-        }
-    };
+        return "";
+    }
 
     @Override
     protected Object onLoad() {
@@ -311,7 +310,13 @@ public class SecHHMMSSTransformation extends Script {
 		
 		String s = (String)input;
 		
-		Duration d = Duration.ofSeconds(Long.parseLong(s));
+		Duration d = null;
+		
+		try {
+			d = Duration.ofSeconds(Long.parseLong(s));
+		} catch (NumberFormatException e) {
+			return null;
+		}
 
 		String timeHHMMSS = String.format("%02d:%02d:%02d", d.toHours(), d.toMinutesPart(), d.toSecondsPart());
 
