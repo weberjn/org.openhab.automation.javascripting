@@ -5,6 +5,18 @@ This openHAB add-on provides support for JSR 223 scripts written in Java that ca
 
 It makes heavy use of Eric Obermühlner's Java JSR 223 ScriptEngine [java-scriptengine](https://github.com/eobermuhlner/java-scriptengine).
 
+# Advantages of Programming Scripts in Java
+
+* high level language Java 
+
+* use the power of the Java runtime library
+
+* develop in your favorite IDE
+
+* remote-debug scripts
+
+* scripts run in Java's speed, after JVM warm-up in native code speed
+
 # Programming Hints
 
 * all Java classes used as JSR 223 script have to inherit from [org.openhab.automation.javascripting.scriptsupport.Script](src/main/java/org/openhab/automation/javascripting/scriptsupport/Script.java)
