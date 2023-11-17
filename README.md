@@ -357,8 +357,9 @@ public class SendMail extends Script {
     @Override
     protected Object onLoad() {
 
-        ThingActions thingActions = actions.get("mail", "mail:smtp:mailSender");
-        actions.invoke(thingActions, "mail_at_receiver", "a subject", "mailcontent Java script onload()");
+        ThingActions thingActions = actions.get("mail", "mail:smtp:local");
+        
+        actions.invoke(thingActions, "sendMail", "weberjn", "java sendmail", "mailcontent Java script onload()");
 
         logger.info("mail sent");
         
