@@ -10,24 +10,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
+package org.openhab.automation.javascripting.annotations;
 
-package org.openhab.automation.javascripting.annotation;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * @author Gwendal Roulleau - Initial contribution
  */
-@NonNullByDefault
-public class RuleParserException extends Exception {
+@Retention(RUNTIME)
+@Target({ ElementType.TYPE, ElementType.FIELD })
+public @interface Library {
 
-    private static final long serialVersionUID = 5744217657057910494L;
-
-    RuleParserException(String message, Throwable e) {
-        super(message, e);
-    }
-
-    RuleParserException(String message) {
-        super(message);
-    }
 }

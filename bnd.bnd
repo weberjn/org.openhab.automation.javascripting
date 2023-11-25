@@ -22,4 +22,3 @@ org.openhab.core.automation.module.script,\
 org.openhab.core.automation.module.script.rulesupport.shared,\
 org.openhab.core.automation.module.script.rulesupport.shared.simple,\
 com.google.gson
-
